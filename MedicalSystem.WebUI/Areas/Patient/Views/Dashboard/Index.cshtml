@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject MedicalSystem.DataAccess.Repository.IRepository.IUnitOfWork UnitOfWork
+
+@{
+    var appUser = await UserManager.GetUserAsync(User);
+    int unreadCount = 0;
+
+    if (appUser != null)
+    {
+        var patient = await UnitOfWork.Patient.GetFirstOrDefaultAsync(p => p.AppUserId == appUser.Id);
+        if (patient != null)
+        {
+            var unread = await UnitOfWork.Notification.GetAllAsync(
+                n => n.PatientId == patient.Id && n.Status == SD.Status_Unreaded);
+            unreadCount = unread.Count();
+        }
+    }
+}
+
+<div class="container-fluid py-4">
+    <!-- Hero Banner -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm text-center">
+        <h1 class="fw-bold mb-2">Welcome back, @appUser?.UserName</h1>
+        <p class="lead text-muted mb-0">Your health center to manage doctors, appointments, history, and notifications.</p>
+    </div>
+
+    <!-- Navigation Buttons (ALL THE WAY DOWN) -->
+    <div class="row g-4 mt-4">
+        <div class="col-md-3">
+            <a asp-area="Patient" asp-controller="Booking" asp-action="GetAllDoctors" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-person-badge display-5 text-primary"></i>
+                <h5 class="mt-3">Doctors</h5>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-area="Patient" asp-controller="Appointment" asp-action="GetAllAppointments" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-calendar-check display-5 text-success"></i>
+                <h5 class="mt-3">Appointments</h5>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-area="Patient" asp-controller="History" asp-action="GetAllAppointments" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-clock-history display-5 text-warning"></i>
+                <h5 class="mt-3">History</h5>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-area="Patient" asp-controller="Notification" asp-action="GetAllNotifications" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-bell display-5 text-danger"></i>
+                <h5 class="mt-3">Notifications</h5>
+                @if (unreadCount > 0)
+                {
+                    <span class="badge bg-danger mt-2">Unread: @unreadCount</span>
+                }
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-area="Patient" asp-controller="Profile" asp-action="GetProfile" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-person-circle display-5 text-dark"></i>
+                <h5 class="mt-3">Profile</h5>
+            </a>
+        </div>
+    </div>
+</div>

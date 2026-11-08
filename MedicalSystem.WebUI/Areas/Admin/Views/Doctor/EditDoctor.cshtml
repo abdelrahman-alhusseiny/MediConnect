@@ -1,0 +1,123 @@
+﻿@model DoctorVM
+
+@{
+    ViewData["Title"] = "Edit Doctor Profile";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-0"><i class="bi bi-pencil-square"></i> Edit Doctor Profile</h2>
+        <p class="text-muted mb-0">Update doctor details, contact information, and department assignment.</p>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="card shadow-sm p-4">
+        <form asp-area="Admin" asp-controller="Doctor" asp-action="EditDoctor" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Hidden Fields -->
+            <input asp-for="Doctor.Id" type="hidden" />
+            <input asp-for="Doctor.ImageUrl" type="hidden" />
+            <input asp-for="DisplayImageUrl" type="hidden" />
+            <input asp-for="HasCustomImage" type="hidden" />
+            <input asp-for="SearchString" type="hidden" />
+            <input asp-for="LockoutStatus" type="hidden" />
+            <input asp-for="CurrentSort" type="hidden" />
+            <input asp-for="CurrentPage" type="hidden" />
+
+            <div class="row g-4">
+                <!-- Image Column -->
+                <div class="col-md-4 text-center">
+                    <img src="@Model.DisplayImageUrl" alt="Profile Image"
+                         class="rounded-circle shadow-sm mb-3"
+                         style="width:200px; height:200px; object-fit:cover;" />
+
+                    @if (Model.HasCustomImage)
+                    {
+                        <div class="mt-2">
+                            <button type="submit" asp-area="Admin" asp-controller="Doctor"
+                                    asp-action="DeleteDoctorImage" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i> Remove Image
+                            </button>
+                        </div>
+                    }
+
+                    <div class="mt-3">
+                        <label asp-for="Doctor.ImageFile" class="form-label fw-bold">
+                            <i class="bi bi-upload"></i> Upload New Image
+                        </label>
+                        <input asp-for="Doctor.ImageFile" type="file" class="form-control" />
+                        <span asp-validation-for="Doctor.ImageFile" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Form Column -->
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label asp-for="Doctor.FullName" class="form-label fw-bold"><i class="bi bi-person"></i> Full Name</label>
+                        <input asp-for="Doctor.FullName" class="form-control" />
+                        <span asp-validation-for="Doctor.FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Doctor.PhoneNumber" class="form-label fw-bold"><i class="bi bi-telephone"></i> Phone Number</label>
+                        <input asp-for="Doctor.PhoneNumber" class="form-control" />
+                        <span asp-validation-for="Doctor.PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Doctor.Address" class="form-label fw-bold"><i class="bi bi-geo-alt"></i> Address</label>
+                        <input asp-for="Doctor.Address" class="form-control" />
+                        <span asp-validation-for="Doctor.Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Doctor.Gender" class="form-label fw-bold"><i class="bi bi-gender-ambiguous"></i> Gender</label>
+                        <select asp-for="Doctor.Gender" asp-items="Model.GenderList" class="form-select">
+                            <option value="">-- Select Gender --</option>
+                        </select>
+                        <span asp-validation-for="Doctor.Gender" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Doctor.DateOfBirth" class="form-label fw-bold"><i class="bi bi-calendar"></i> Date of Birth</label>
+                        <input asp-for="Doctor.DateOfBirth" type="date" class="form-control" />
+                        <span asp-validation-for="Doctor.DateOfBirth" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Doctor.DepartmentId" class="form-label fw-bold"><i class="bi bi-building"></i> Department</label>
+                        <select asp-for="Doctor.DepartmentId" asp-items="Model.DepartmentList" class="form-select">
+                            <option value="">-- Select Department --</option>
+                        </select>
+                        <span asp-validation-for="Doctor.DepartmentId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Doctor.AboutMe" class="form-label fw-bold"><i class="bi bi-info-circle"></i> About Me</label>
+                        <textarea asp-for="Doctor.AboutMe" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Doctor.AboutMe" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 text-end">
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Save Changes</button>
+                <a asp-area="Admin" asp-controller="Doctor" asp-action="GetDoctor"
+                   asp-route-id="@Model.Doctor.Id"
+                   asp-route-searchString="@Model.SearchString"
+                   asp-route-lockoutStatus="@Model.LockoutStatus"
+                   asp-route-currentSort="@Model.CurrentSort"
+                   asp-route-currentPage="@Model.CurrentPage"
+                   class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

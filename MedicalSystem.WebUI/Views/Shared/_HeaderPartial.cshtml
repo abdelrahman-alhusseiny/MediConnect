@@ -1,0 +1,83 @@
+﻿@using MedicalSystem.Utilities.Utilities
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject IUnitOfWork UnitOfWork
+
+@{
+    var appUser = await UserManager.GetUserAsync(User);
+    int unreadCount = 0;
+
+    if (User.IsInRole(SD.Role_Patient) && appUser != null)
+    {
+        var patient = await UnitOfWork.Patient.GetFirstOrDefaultAsync(p => p.AppUserId == appUser.Id);
+        if (patient != null)
+        {
+            var unread = await UnitOfWork.Notification.GetAllAsync(n => n.PatientId == patient.Id && n.Status == SD.Status_Unreaded);
+            unreadCount = unread.Count();
+        }
+    }
+
+    if (User.IsInRole(SD.Role_Doctor) && appUser != null)
+    {
+        var doctor = await UnitOfWork.Doctor.GetFirstOrDefaultAsync(d => d.AppUserId == appUser.Id);
+        if (doctor != null)
+        {
+            var unread = await UnitOfWork.Notification.GetAllAsync(n => n.DoctorId == doctor.Id && n.Status == SD.Status_Unreaded);
+            unreadCount = unread.Count();
+        }
+    }
+}
+
+<header class="topbar" aria-label="Top navigation">
+    <div class="container-fluid">
+        <a class="d-lg-none brand-pill" asp-area="" asp-controller="Home" asp-action="Index" aria-label="Home">
+            <span class="brand-icon"><i class="bi bi-hospital"></i></span>
+            <span>MedicaCare</span>
+        </a>
+
+        <div class="d-flex align-items-center gap-2 ms-auto">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="topbar-pill" asp-area="@(User.IsInRole(SD.Role_Patient) ? "Patient" : User.IsInRole(SD.Role_Doctor) ? "Doctor" : User.IsInRole(SD.Role_Admin) ? "Admin" : "")" asp-controller="@(User.IsInRole(SD.Role_Patient) ? "Notification" : User.IsInRole(SD.Role_Doctor) ? "Notification" : "Dashboard")" asp-action="@(User.IsInRole(SD.Role_Patient) || User.IsInRole(SD.Role_Doctor) ? "GetAllNotifications" : "Index")" aria-label="Notifications">
+                    <i class="bi bi-bell"></i>
+                    @if (unreadCount > 0)
+                    {
+                        <span class="badge rounded-pill bg-danger ms-2">@unreadCount</span>
+                    }
+                </a>
+
+                <div class="dropdown">
+                    <button class="topbar-pill dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Profile menu">
+                        <i class="bi bi-person-circle"></i>
+                        <span>@(appUser?.UserName ?? "Account")</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        @if (User.IsInRole(SD.Role_Patient))
+                        {
+                            <li><a class="dropdown-item" asp-area="Patient" asp-controller="Profile" asp-action="GetProfile"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                        }
+                        @if (User.IsInRole(SD.Role_Doctor))
+                        {
+                            <li><a class="dropdown-item" asp-area="Doctor" asp-controller="Profile" asp-action="GetProfile"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                        }
+                        @if (User.IsInRole(SD.Role_Admin))
+                        {
+                            <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                        }
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <form asp-area="Identity" asp-controller="Account" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a class="btn btn-outline-primary btn-sm" asp-area="Identity" asp-controller="Account" asp-action="Login">Login</a>
+                <a class="btn btn-gradient-primary btn-sm" asp-area="Identity" asp-controller="Account" asp-action="ChooseRole">Register</a>
+            }
+        </div>
+    </div>

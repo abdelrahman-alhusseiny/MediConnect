@@ -1,0 +1,115 @@
+﻿@model RegisterDoctorVM
+
+@{
+    ViewData["Title"] = "Register New Doctor";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-0"><i class="bi bi-person-plus"></i> Register New Doctor</h2>
+        <p class="text-muted mb-0">Add a new doctor to the system with complete profile and credentials.</p>
+    </div>
+
+    <!-- Register Form -->
+    <div class="card shadow-sm p-4">
+        <form asp-area="Admin" asp-controller="Doctor" asp-action="RegisterDoctor" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Hidden Fields -->
+            <input asp-for="Doctor.Department" type="hidden" />
+            <input asp-for="SearchString" type="hidden" />
+            <input asp-for="LockoutStatus" type="hidden" />
+            <input asp-for="CurrentSort" type="hidden" />
+            <input asp-for="CurrentPage" type="hidden" />
+
+            <!-- Personal Info -->
+            <h5 class="fw-bold mb-3">Personal Information</h5>
+            <div class="mb-3">
+                <label asp-for="Doctor.FullName" class="form-label fw-bold"><i class="bi bi-person"></i> Full Name</label>
+                <input asp-for="Doctor.FullName" class="form-control" />
+                <span asp-validation-for="Doctor.FullName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-bold"><i class="bi bi-envelope"></i> Email</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Doctor.PhoneNumber" class="form-label fw-bold"><i class="bi bi-telephone"></i> Phone Number</label>
+                <input asp-for="Doctor.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Doctor.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Doctor.Address" class="form-label fw-bold"><i class="bi bi-geo-alt"></i> Address</label>
+                <input asp-for="Doctor.Address" class="form-control" />
+                <span asp-validation-for="Doctor.Address" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Doctor.Gender" class="form-label fw-bold"><i class="bi bi-gender-ambiguous"></i> Gender</label>
+                <select asp-for="Doctor.Gender" asp-items="Model.GenderList" class="form-select">
+                    <option value="">-- Select Gender --</option>
+                </select>
+                <span asp-validation-for="Doctor.Gender" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Doctor.DateOfBirth" class="form-label fw-bold"><i class="bi bi-calendar"></i> Date of Birth</label>
+                <input asp-for="Doctor.DateOfBirth" type="date" class="form-control" />
+                <span asp-validation-for="Doctor.DateOfBirth" class="text-danger"></span>
+            </div>
+
+            <!-- Professional Info -->
+            <h5 class="fw-bold mt-4 mb-3">Professional Information</h5>
+            <div class="mb-3">
+                <label asp-for="Doctor.DepartmentId" class="form-label fw-bold"><i class="bi bi-building"></i> Department</label>
+                <select asp-for="Doctor.DepartmentId" asp-items="Model.DepartmentList" class="form-select">
+                    <option value="">-- Select Department --</option>
+                </select>
+                <span asp-validation-for="Doctor.DepartmentId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Doctor.AboutMe" class="form-label fw-bold"><i class="bi bi-info-circle"></i> About Me</label>
+                <textarea asp-for="Doctor.AboutMe" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Doctor.AboutMe" class="text-danger"></span>
+            </div>
+
+            <!-- Profile Image -->
+            <h5 class="fw-bold mt-4 mb-3">Profile Image</h5>
+            <div class="mb-3">
+                <label asp-for="Doctor.ImageFile" class="form-label fw-bold"><i class="bi bi-image"></i> Upload Image (Optional)</label>
+                <input asp-for="Doctor.ImageFile" type="file" class="form-control" accept="image/*" />
+                <span asp-validation-for="Doctor.ImageFile" class="text-danger"></span>
+            </div>
+
+            <!-- Account Credentials -->
+            <h5 class="fw-bold mt-4 mb-3">Account Credentials</h5>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-bold"><i class="bi bi-lock"></i> Password</label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="ConfirmPassword" class="form-label fw-bold"><i class="bi bi-lock-fill"></i> Confirm Password</label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Register</button>
+                <a asp-area="Admin" asp-controller="Doctor" asp-action="GetAllDoctors"
+                   asp-route-searchString="@Model.SearchString"
+                   asp-route-lockoutStatus="@Model.LockoutStatus"
+                   asp-route-currentSort="@Model.CurrentSort"
+                   asp-route-currentPage="@Model.CurrentPage" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Back to List
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

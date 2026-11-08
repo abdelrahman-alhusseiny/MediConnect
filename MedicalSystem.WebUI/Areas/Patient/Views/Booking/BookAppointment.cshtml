@@ -1,0 +1,66 @@
+﻿@model AppointmentVM
+
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-0"><i class="bi bi-plus-circle"></i> Book Appointment</h2>
+            <p class="text-muted mb-0">Complete your visit request and confirm your preferred payment method.</p>
+        </div>
+        <div class="badge bg-primary rounded-pill"><i class="bi bi-calendar2-check"></i> Secure Booking</div>
+    </div>
+
+    <!-- Appointment Form -->
+    <div class="card shadow-sm p-4">
+        <form asp-area="Patient" asp-controller="Booking" asp-action="BookAppointment" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Hidden Fields -->
+            <input asp-for="ScheduleId" type="hidden" />
+            <input asp-for="ClinicId" type="hidden" />
+            <input asp-for="DoctorId" type="hidden" />
+
+            <input asp-for="Appointment.PatientName" type="hidden" />
+            <input asp-for="Appointment.PatientPhoneNumber" type="hidden" />
+            <input asp-for="Appointment.PatientGender" type="hidden" />
+            <input asp-for="Appointment.PatientAge" type="hidden" />
+            <input asp-for="Appointment.PatientAddress" type="hidden" />
+            <input asp-for="Appointment.PatientImageUrl" type="hidden" />
+
+            <!-- Reason for Visit -->
+            <div class="mb-3">
+                <label asp-for="Appointment.ReasonForVisit" class="form-label fw-bold"><i class="bi bi-sticky"></i> Reason for Visit</label>
+                <textarea asp-for="Appointment.ReasonForVisit" class="form-control" rows="3" placeholder="e.g. headache, follow-up for diabetes"></textarea>
+                <span asp-validation-for="Appointment.ReasonForVisit" class="text-danger"></span>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="mb-3">
+                <label asp-for="Appointment.PaymentMethod" class="form-label fw-bold"><i class="bi bi-cash"></i> Payment Method</label>
+                <select asp-for="Appointment.PaymentMethod" asp-items="Model.PaymentMethodList" class="form-select">
+                    <option value="">-- Select Payment Method --</option>
+                </select>
+                <span asp-validation-for="Appointment.PaymentMethod" class="text-danger"></span>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex justify-content-between flex-wrap gap-2">
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Confirm Appointment</button>
+                <a asp-area="Patient" asp-controller="Booking" asp-action="AppointmentSummary"
+                   asp-route-scheduleId="@Model.ScheduleId"
+                   asp-route-clinicId="@Model.ClinicId"
+                   asp-route-doctorId="@Model.DoctorId"
+                   class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Back to Summary</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

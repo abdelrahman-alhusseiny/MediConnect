@@ -1,0 +1,70 @@
+﻿@model AppointmentVM
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-0"><i class="bi bi-info-circle"></i> Appointment Details</h2>
+        <p class="text-muted mb-0">Review clinic, patient, and appointment information.</p>
+    </div>
+
+    <!-- Appointment Card -->
+    <div class="card shadow-sm p-4">
+        <!-- Clinic Info -->
+        <h4 class="fw-bold text-success mb-3"><i class="bi bi-building"></i> @Model.ClinicName</h4>
+        <div class="row row-cols-2 g-3 mb-3">
+            <div class="col"><strong><i class="bi bi-geo-alt"></i> Address:</strong> @Model.ClinicAddress</div>
+            <div class="col"><strong><i class="bi bi-telephone"></i> Phone:</strong> @Model.ClinicPhoneNumber</div>
+            <div class="col"><strong><i class="bi bi-cash"></i> Price:</strong> @Model.ConsultationPrice?.ToString("C")</div>
+        </div>
+
+        <!-- Appointment Details -->
+        <h5 class="fw-bold text-secondary mb-3">Appointment Details</h5>
+        <div class="row row-cols-2 g-3 mb-3">
+            <div class="col"><strong><i class="bi bi-calendar"></i> Day:</strong> @Model.ScheduleDayOfWeek</div>
+            <div class="col"><strong><i class="bi bi-calendar-date"></i> Date:</strong> @Model.Appointment.AppointmentDate.ToString("dd/MM/yyyy")</div>
+            <div class="col"><strong><i class="bi bi-clock"></i> Time:</strong> @DateTime.Today.Add(Model.Appointment.AppointmentTime).ToString("hh:mm tt")</div>
+            <div class="col"><strong><i class="bi bi-hourglass-split"></i> Duration:</strong> @Model.AppointmentDuration minutes</div>
+            <div class="col"><strong><i class="bi bi-sticky"></i> Notes:</strong> @Model.ScheduleNotes</div>
+            <div class="col">
+                <strong><i class="bi bi-check-circle"></i> Status:</strong>
+                <span class="badge @(Model.Appointment.Status == "Pending" ? "bg-warning text-dark" :
+                                                          Model.Appointment.Status == "Confirmed" ? "bg-info text-dark" :
+                                                          Model.Appointment.Status == "Completed" ? "bg-success" :
+                                                          Model.Appointment.Status == "Cancelled" ? "bg-danger" : "bg-secondary")">
+                    @Model.Appointment.Status
+                </span>
+            </div>
+            <div class="col"><strong><i class="bi bi-clock-history"></i> Created At:</strong> @Model.Appointment.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")</div>
+        </div>
+
+        <!-- Patient Info -->
+        <h5 class="fw-bold text-info mb-3">Patient Information</h5>
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <img src="@Model.PatientDisplayImageUrl" alt="Patient Image"
+                 class="rounded-circle border shadow-sm" style="width:100px; height:100px; object-fit:cover;" />
+            <div>
+                <div class="fw-semibold">@Model.Appointment.PatientName</div>
+                <div class="text-muted">@Model.Appointment.PatientPhoneNumber</div>
+            </div>
+        </div>
+        <div class="row row-cols-2 g-3 mb-3">
+            <div class="col"><strong><i class="bi bi-house"></i> Address:</strong> @Model.Appointment.PatientAddress</div>
+            <div class="col"><strong><i class="bi bi-gender-ambiguous"></i> Gender:</strong> @Model.Appointment.PatientGender</div>
+            <div class="col"><strong><i class="bi bi-cake"></i> Age:</strong> @Model.Appointment.PatientAge</div>
+            <div class="col"><strong><i class="bi bi-journal-medical"></i> Reason:</strong> @Model.Appointment.ReasonForVisit</div>
+        </div>
+
+        <!-- Payment Info -->
+        <p class="mt-3"><strong><i class="bi bi-wallet2"></i> Payment Method:</strong> @Model.Appointment.PaymentMethod</p>
+
+        <!-- Actions -->
+        <div class="mt-4">
+            <a asp-area="Doctor" asp-controller="History" asp-action="GetAllAppointments"
+               asp-route-clinicId="@Model.ClinicId"
+               asp-route-dayOfWeek="@Model.DayOfWeek"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to List</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,67 @@
+﻿@model NotificationVM
+
+@{
+    ViewData["Title"] = "Notification Details";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-0"><i class="bi bi-info-circle"></i> Notification Details</h2>
+        <p class="text-muted mb-0">Review the notification message and status.</p>
+    </div>
+
+    <!-- Notification Card -->
+    <div class="card shadow-sm p-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <h6 class="fw-bold"><i class="bi bi-tag"></i> Title</h6>
+                <p class="text-muted mb-0">@Model.Notification.Title</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="fw-bold"><i class="bi bi-info-circle"></i> Type</h6>
+                <p class="text-muted mb-0">@Model.Notification.Type</p>
+            </div>
+            <div class="col-md-12">
+                <h6 class="fw-bold"><i class="bi bi-chat-text"></i> Message</h6>
+                <p class="text-muted mb-0">@Model.Notification.Message</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="fw-bold"><i class="bi bi-clock"></i> Created At</h6>
+                <p class="text-muted mb-0">@Model.Notification.CreatedAt.ToString("yyyy-MM-dd")</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="fw-bold"><i class="bi bi-bell"></i> Status</h6>
+                <span class="badge @(Model.Notification.Status == SD.Status_Unreaded ? "bg-warning text-dark"
+                                                              : Model.Notification.Status == SD.Status_Readed ? "bg-success"
+                                                              : "bg-secondary")">
+                    @Model.Notification.Status
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-4 d-flex flex-wrap gap-2">
+        <a asp-area="Patient" asp-controller="Notification" asp-action="GetAllNotifications"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-typeStatus="@Model.TypeStatus"
+           asp-route-currentSort="@Model.CurrentSort"
+           asp-route-currentPage="@Model.CurrentPage"
+           class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Back to List</a>
+
+        <form asp-area="Patient" asp-controller="Notification" asp-action="DiscardNotification" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <input asp-for="Notification.Id" type="hidden" />
+            <input asp-for="SearchString" type="hidden" />
+            <input asp-for="TypeStatus" type="hidden" />
+            <input asp-for="CurrentSort" type="hidden" />
+            <input asp-for="CurrentPage" type="hidden" />
+            <button type="submit" class="btn btn-danger"><i class="bi bi-x-circle"></i> Discard</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

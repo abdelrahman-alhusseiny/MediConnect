@@ -1,0 +1,78 @@
+﻿@using MedicalSystem.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject MedicalSystem.DataAccess.Repository.IRepository.IUnitOfWork UnitOfWork
+
+@{
+    var appUser = await UserManager.GetUserAsync(User);
+    int unreadCount = 0;
+    if (appUser != null)
+    {
+        var doctor = await UnitOfWork.Doctor.GetFirstOrDefaultAsync(d => d.AppUserId == appUser.Id);
+        if (doctor != null)
+        {
+            var unread = await UnitOfWork.Notification.GetAllAsync(
+                n => n.DoctorId == doctor.Id && n.Status == SD.Status_Unreaded);
+            unreadCount = unread.Count();
+        }
+    }
+}
+
+<div class="container-fluid py-4">
+    <!-- Hero Banner -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm text-center">
+        <h1 class="fw-bold mb-2">Welcome back, Dr. @appUser?.UserName</h1>
+        <p class="lead text-muted mb-0">Your workspace to manage clinics, schedules, appointments, and patient feedback.</p>
+    </div>
+
+
+    <!-- Navigation Buttons (ALL THE WAY DOWN) -->
+    <div class="row g-4 mt-4">
+        <div class="col-md-3">
+            <a asp-area="Doctor" asp-controller="Clinic" asp-action="GetAllClinics" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-hospital display-5 text-primary"></i>
+                <h5 class="mt-3">Clinics</h5>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-area="Doctor" asp-controller="Schedule" asp-action="GetAllSchedules" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-calendar-week display-5 text-success"></i>
+                <h5 class="mt-3">Schedules</h5>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-area="Doctor" asp-controller="Appointment" asp-action="GetAllAppointments" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-calendar-check display-5 text-info"></i>
+                <h5 class="mt-3">Appointments</h5>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-area="Doctor" asp-controller="History" asp-action="GetAllAppointments" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-clock-history display-5 text-warning"></i>
+                <h5 class="mt-3">History</h5>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-area="Doctor" asp-controller="Review" asp-action="GetAllReviews" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-chat-square-text display-5 text-secondary"></i>
+                <h5 class="mt-3">Reviews</h5>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-area="Doctor" asp-controller="Notification" asp-action="GetAllNotifications" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-bell display-5 text-danger"></i>
+                <h5 class="mt-3">Notifications</h5>
+                @if (unreadCount > 0)
+                {
+                    <span class="badge bg-danger mt-2">Unread: @unreadCount</span>
+                }
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a asp-area="Doctor" asp-controller="Profile" asp-action="GetProfile" class="card text-center shadow-sm p-4 h-100 text-decoration-none">
+                <i class="bi bi-person-circle display-5 text-dark"></i>
+                <h5 class="mt-3">Profile</h5>
+            </a>
+        </div>
+    </div>
+</div>

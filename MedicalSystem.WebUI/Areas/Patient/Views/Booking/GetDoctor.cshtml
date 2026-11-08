@@ -1,0 +1,126 @@
+﻿@model DoctorVM
+
+@{
+    ViewData["Title"] = "Doctor Details";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <img src="@Model.DisplayImageUrl" alt="Profile Image"
+             class="rounded-circle shadow-sm mb-3"
+             style="width:200px; height:200px; object-fit:cover;" />
+        <h2 class="fw-bold"><i class="bi bi-person-circle"></i> @Model.Doctor.FullName</h2>
+    </div>
+
+    <!-- Doctor Details -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold"><i class="bi bi-envelope"></i> Email</h6>
+                    <p class="text-muted">@Model.AppUserEmail</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold"><i class="bi bi-telephone"></i> Phone Number</h6>
+                    <p class="text-muted">@Model.Doctor.PhoneNumber</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold"><i class="bi bi-gender-ambiguous"></i> Gender</h6>
+                    <p class="text-muted">@Model.Doctor.Gender</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold"><i class="bi bi-calendar"></i> Age</h6>
+                    <p class="text-muted">@Model.Age</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold"><i class="bi bi-building"></i> Department</h6>
+                    <p class="text-muted">@Model.DepartmentName</p>
+                    <small class="text-muted">@Model.DepartmentDescription</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold"><i class="bi bi-file-earmark-text"></i> About Me</h6>
+                    <p class="text-muted">@Model.Doctor.AboutMe</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold"><i class="bi bi-star"></i> Rating</h6>
+                    @{
+                        double avgRating = Model.AverageRating ?? 0;
+                    }
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= (int)Math.Floor(avgRating))
+                        {
+                            <i class="bi bi-star-fill text-warning"></i>
+                        }
+                        else if (i == (int)Math.Ceiling(avgRating) && (avgRating - Math.Floor(avgRating)) > 0)
+                        {
+
+                            <i class="bi bi-star-half text-warning"></i>
+                        }
+                        else
+                        {
+
+                            <i class="bi bi-star text-warning"></i>
+                        }
+                    }
+                    <span class="text-muted">(@avgRating.ToString("0.0"))</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-footer text-end">
+            <a asp-area="Patient" asp-controller="Booking" asp-action="GetAllDoctors"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-departmentId="@Model.DepartmentId"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-secondary me-2">
+                <i class="bi bi-arrow-left-circle"></i> Back to List
+            </a>
+            <a asp-area="Patient" asp-controller="Booking" asp-action="GetDoctorReviews"
+               asp-route-doctorId="@Model.Doctor.Id"
+               asp-route-sourceView="@Model.SourceView"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-departmentId="@Model.DepartmentId"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               asp-route-doctorId="@Model.Doctor.Id"
+               class="btn btn-warning me-2">
+                <i class="bi bi-star"></i> Doctor Reviews
+            </a>
+            <a asp-area="Patient" asp-controller="Booking" asp-action="GetDoctorClinics"
+               asp-route-doctorId="@Model.Doctor.Id"
+               class="btn btn-info">
+                <i class="bi bi-hospital"></i> View Clinics
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,143 @@
+﻿@model ClinicListVM
+
+@{
+    ViewData["Title"] = "Clinic List";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">
+            <i class="bi bi-hospital"></i> Clinic List
+        </h2>
+        <a asp-area="Doctor" asp-controller="Clinic" asp-action="CreateClinic"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-currentSort="@Model.CurrentSort"
+           asp-route-currentPage="@Model.CurrentPage"
+           class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New
+        </a>
+    </div>
+
+    <!-- Search & Sort Panel -->
+    <div class="card p-3 mb-4 shadow-sm">
+        <form asp-area="Doctor" asp-controller="Clinic" asp-action="GetAllClinics" method="get" class="row g-3">
+            <input type="hidden" name="currentSort" value="@Model.CurrentSort" />
+            <input type="hidden" name="currentPage" value="1" />
+
+            <div class="col-md-6">
+                <input type="text" name="searchString" value="@Model.SearchString"
+                       class="form-control" placeholder="Search clinics..." />
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+            <div class="col-md-3">
+                <a asp-area="Doctor" asp-controller="Clinic" asp-action="GetAllClinics"
+                   class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                </a>
+            </div>
+        </form>
+
+        <div class="mt-3">
+            <span class="fw-bold me-2">Sort by:</span>
+            <a asp-area="Doctor" asp-controller="Clinic" asp-action="GetAllClinics"
+               asp-route-currentSort="@Model.NameSort"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-sm btn-outline-secondary me-2">
+                Name
+                @if (Model.CurrentSort == "name")
+                {
+                    <i class="bi bi-caret-up-fill"></i>
+                }
+                else if (Model.CurrentSort == "name_desc")
+                {
+
+                    <i class="bi bi-caret-down-fill"></i>
+                }
+            </a>
+            <a asp-area="Doctor" asp-controller="Clinic" asp-action="GetAllClinics"
+               asp-route-currentSort="@Model.CreatedAtSort"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-sm btn-outline-secondary">
+                Created At
+                @if (Model.CurrentSort == "created")
+                {
+                    <i class="bi bi-caret-up-fill"></i>
+                }
+                else if (Model.CurrentSort == "created_desc")
+                {
+
+                    <i class="bi bi-caret-down-fill"></i>
+                }
+            </a>
+        </div>
+    </div>
+
+    <!-- Clinic Cards -->
+    @if (!Model.Clinics.Any())
+    {
+        <div class="alert alert-warning shadow-sm">
+            <i class="bi bi-exclamation-triangle"></i> No clinics available.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var item in Model.Clinics)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary">@item.Clinic.Name</h5>
+                            <p class="card-text mb-1"><i class="bi bi-geo-alt"></i> @item.Clinic.Address</p>
+                            <p class="card-text mb-1"><i class="bi bi-phone"></i> @item.Clinic.PhoneNumber</p>
+                            <p class="card-text mb-1"><i class="bi bi-currency-exchange"></i> @item.Clinic.ConsultationPrice.ToString("C")</p>
+                            <p class="card-text"><i class="bi bi-clock-history"></i> @item.Clinic.CreatedAt.ToString("yyyy-MM-dd")</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <a asp-area="Doctor" asp-controller="Clinic" asp-action="GetClinic" asp-route-id="@item.Clinic.Id"
+                               asp-route-searchString="@Model.SearchString"
+                               asp-route-currentSort="@Model.CurrentSort"
+                               asp-route-currentPage="@Model.CurrentPage"
+                               class="btn btn-sm btn-info"><i class="bi bi-eye"></i> Details</a>
+                            <a asp-area="Doctor" asp-controller="Clinic" asp-action="EditClinic" asp-route-id="@item.Clinic.Id"
+                               asp-route-sourceView="@Model.SourceView"
+                               asp-route-searchString="@Model.SearchString"
+                               asp-route-currentSort="@Model.CurrentSort"
+                               asp-route-currentPage="@Model.CurrentPage"
+                               class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> Edit</a>
+                            <a asp-area="Doctor" asp-controller="Clinic" asp-action="DeleteClinic" asp-route-id="@item.Clinic.Id"
+                               asp-route-sourceView="@Model.SourceView"
+                               asp-route-searchString="@Model.SearchString"
+                               asp-route-currentSort="@Model.CurrentSort"
+                               asp-route-currentPage="@Model.CurrentPage"
+                               class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Delete</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a asp-area="Doctor" asp-controller="Clinic" asp-action="GetAllClinics"
+                           asp-route-currentPage="@i"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-currentSort="@Model.CurrentSort"
+                           class="page-link">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

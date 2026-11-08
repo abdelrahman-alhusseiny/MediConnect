@@ -1,0 +1,40 @@
+﻿@model ChooseRoleVM
+
+@{
+    ViewData["Title"] = "Choose Role";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm text-center">
+        <h2 class="fw-bold mb-2"><i class="bi bi-people"></i> Choose Your Role</h2>
+        <p class="text-muted mb-0">Create a dedicated account for the way you care for patients or manage clinics.</p>
+    </div>
+
+    <!-- Role Options -->
+    <div class="row g-4 justify-content-center text-center">
+        <!-- Patient Card -->
+        <div class="col-md-5">
+            <div class="card shadow-sm h-100 p-4">
+                <img src="@Model.PatientImageUrl" alt="Patient" class="img-fluid rounded-circle shadow-sm mb-3" style="max-width:140px;" />
+                <h4 class="fw-semibold"><i class="bi bi-person-fill"></i> Patient</h4>
+                <p class="text-muted">Book appointments, review history, and stay connected to your care team.</p>
+                <a asp-area="Identity" asp-controller="Account" asp-action="RegisterPatient" class="btn btn-success w-100">
+                    <i class="bi bi-person-fill me-2"></i> Register as Patient
+                </a>
+            </div>
+        </div>
+
+        <!-- Doctor Card -->
+        <div class="col-md-5">
+            <div class="card shadow-sm h-100 p-4">
+                <img src="@Model.DoctorImageUrl" alt="Doctor" class="img-fluid rounded-circle shadow-sm mb-3" style="max-width:140px;" />
+                <h4 class="fw-semibold"><i class="bi bi-person-badge-fill"></i> Doctor</h4>
+                <p class="text-muted">Manage clinics, schedules, appointments, and review feedback in a guided dashboard.</p>
+                <a asp-area="Identity" asp-controller="Account" asp-action="RegisterDoctor" class="btn btn-primary w-100">
+                    <i class="bi bi-person-badge-fill me-2"></i> Register as Doctor
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

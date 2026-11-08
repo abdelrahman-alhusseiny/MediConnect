@@ -1,0 +1,76 @@
+﻿@model DoctorReviewVM
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold text-danger mb-0"><i class="bi bi-trash"></i> Confirm Delete Review</h2>
+        <p class="text-muted mb-0">Deleting your review is permanent and cannot be undone.</p>
+    </div>
+
+    <!-- Warning Alert -->
+    <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>Are you sure you want to delete your review for Dr. @Model.DoctorReview.Doctor.FullName?</div>
+    </div>
+
+    <!-- Patient Info -->
+    <div class="d-flex align-items-center mb-3">
+        <img src="@Model.PatientImageUrl" alt="Patient Image"
+             class="rounded-circle shadow-sm me-3"
+             style="width:50px; height:50px; object-fit:cover;" />
+        <div>
+            <strong>@Model.PatientName</strong><br />
+            <small class="text-muted">@Model.DoctorReview.CreatedAt.ToString("dd MMM yyyy")</small>
+        </div>
+    </div>
+
+    <!-- Rating Stars -->
+    <div class="mb-3">
+        @{
+            double rating = Model.DoctorReview.Rating;
+        }
+        @for (int i = 1; i <= 5; i++)
+        {
+            if (i <= (int)Math.Floor(rating))
+            {
+                <i class="bi bi-star-fill text-warning"></i>
+            }
+            else if (i == (int)Math.Ceiling(rating) && (rating - Math.Floor(rating)) > 0)
+            {
+                <i class="bi bi-star-half text-warning"></i>
+            }
+            else
+            {
+                <i class="bi bi-star text-warning"></i>
+            }
+        }
+    </div>
+
+    <!-- Comment -->
+    <p class="border rounded p-3 bg-light">@Model.DoctorReview.Comment</p>
+
+    <!-- Delete Form -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            <form asp-action="DeleteDoctorReview" asp-controller="Booking" asp-area="Patient" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="DoctorReview.Id" />
+                <input type="hidden" asp-for="DoctorId" />
+                <input type="hidden" asp-for="SourceView" />
+                <input type="hidden" asp-for="SearchString" />
+                <input type="hidden" asp-for="DepartmentId" />
+                <input type="hidden" asp-for="CurrentSort" />
+                <input type="hidden" asp-for="CurrentPage" />
+                <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Yes, Delete Review</button>
+            </form>
+            <a asp-area="Patient" asp-controller="Booking" asp-action="GetDoctorReviews"
+               asp-route-doctorId="@Model.DoctorId"
+               asp-route-sourceView="@Model.SourceView"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-departmentId="@Model.DepartmentId"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Cancel</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+﻿@model PayAppointmentVM
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-0"><i class="bi bi-credit-card"></i> Pay for Appointment</h2>
+        <p class="text-muted mb-0">Securely complete your payment using your card.</p>
+    </div>
+
+    <!-- Payment Card -->
+    <div class="card shadow-sm p-4">
+        <!-- Appointment Summary -->
+        <h5 class="fw-bold text-primary mb-3"><i class="bi bi-info-circle"></i> Appointment Summary</h5>
+        <div class="row row-cols-2 g-3 mb-4">
+            <div class="col"><strong>Doctor:</strong> @Model.DoctorName</div>
+            <div class="col"><strong>Clinic:</strong> @Model.ClinicName</div>
+            <div class="col"><strong>Date:</strong> @Model.AppointmentDate.ToString("dddd, dd MMM yyyy")</div>
+            <div class="col"><strong>Time:</strong> @Model.AppointmentTime</div>
+            <div class="col"><strong>Consultation Price:</strong> <span class="text-success fw-bold">@Model.ConsultationPrice.ToString("C")</span></div>
+        </div>
+
+        <!-- Payment Form -->
+        <form asp-action="PayAppointmentByCard" asp-controller="Appointment" asp-area="Patient" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Hidden Fields -->
+            <input type="hidden" asp-for="AppointmentId" />
+            <input type="hidden" asp-for="SourceView" />
+            <input type="hidden" asp-for="SearchString" />
+            <input type="hidden" asp-for="DayOfWeek" />
+            <input type="hidden" asp-for="CurrentSort" />
+            <input type="hidden" asp-for="CurrentPage" />
+
+            <!-- Card Number -->
+            <div class="mb-3">
+                <label asp-for="CardNumber" class="form-label fw-bold"><i class="bi bi-credit-card-2-front"></i> Card Number</label>
+                <input asp-for="CardNumber" class="form-control" placeholder="Enter card number" />
+                <span asp-validation-for="CardNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Expiry -->
+            <div class="row mb-3">
+                <div class="col">
+                    <label asp-for="ExpiryMonth" class="form-label fw-bold"><i class="bi bi-calendar"></i> Expiry Month</label>
+                    <input asp-for="ExpiryMonth" class="form-control" placeholder="MM" />
+                    <span asp-validation-for="ExpiryMonth" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <label asp-for="ExpiryYear" class="form-label fw-bold"><i class="bi bi-calendar"></i> Expiry Year</label>
+                    <input asp-for="ExpiryYear" class="form-control" placeholder="YYYY" />
+                    <span asp-validation-for="ExpiryYear" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- CVV -->
+            <div class="mb-3">
+                <label asp-for="CVV" class="form-label fw-bold"><i class="bi bi-shield-lock"></i> CVV</label>
+                <input asp-for="CVV" class="form-control" placeholder="Enter CVV" />
+                <span asp-validation-for="CVV" class="text-danger"></span>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex flex-wrap gap-2">
+                <button type="submit" class="btn btn-success flex-fill"><i class="bi bi-credit-card"></i> Pay with Card</button>
+                <a asp-action="@Model.SourceView" asp-controller="Appointment" asp-area="Patient"
+                   asp-route-id="@Model.AppointmentId"
+                   asp-route-searchString="@Model.SearchString"
+                   asp-route-dayOfWeek="@Model.DayOfWeek"
+                   asp-route-currentSort="@Model.CurrentSort"
+                   asp-route-currentPage="@Model.CurrentPage"
+                   class="btn btn-secondary flex-fill"><i class="bi bi-x-circle"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

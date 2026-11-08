@@ -1,0 +1,93 @@
+﻿@model AppointmentVM
+
+@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-0"><i class="bi bi-plus-circle"></i> Book Appointment</h2>
+        <p class="text-muted mb-0">Fill in patient details and confirm your booking.</p>
+    </div>
+
+    <!-- Appointment Form -->
+    <div class="card shadow-sm p-4">
+        <form asp-area="Patient" asp-controller="Booking" asp-action="BookForOther" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Hidden Fields -->
+            <input asp-for="ScheduleId" type="hidden" />
+            <input asp-for="ClinicId" type="hidden" />
+            <input asp-for="DoctorId" type="hidden" />
+
+            <!-- Patient Info -->
+            <h5 class="fw-bold mb-3">Patient Information</h5>
+            <div class="mb-3">
+                <label asp-for="Appointment.PatientName" class="form-label fw-bold"><i class="bi bi-person"></i> Patient Name</label>
+                <input asp-for="Appointment.PatientName" class="form-control" placeholder="Enter name" />
+                <span asp-validation-for="Appointment.PatientName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Appointment.PatientPhoneNumber" class="form-label fw-bold"><i class="bi bi-telephone"></i> Patient Phone Number</label>
+                <input asp-for="Appointment.PatientPhoneNumber" class="form-control" placeholder="Enter phone number" />
+                <span asp-validation-for="Appointment.PatientPhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Appointment.PatientAddress" class="form-label fw-bold"><i class="bi bi-geo-alt"></i> Patient Address</label>
+                <textarea asp-for="Appointment.PatientAddress" class="form-control" rows="2" placeholder="Enter address"></textarea>
+                <span asp-validation-for="Appointment.PatientAddress" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Appointment.PatientGender" class="form-label fw-bold"><i class="bi bi-gender-ambiguous"></i> Patient Gender</label>
+                <select asp-for="Appointment.PatientGender" asp-items="Model.GenderList" class="form-select">
+                    <option value="">-- Select Gender --</option>
+                </select>
+                <span asp-validation-for="Appointment.PatientGender" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Appointment.PatientAge" class="form-label fw-bold"><i class="bi bi-calendar"></i> Patient Age</label>
+                <input asp-for="Appointment.PatientAge" class="form-control" type="number" min="0" max="120" placeholder="Enter age" />
+                <span asp-validation-for="Appointment.PatientAge" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Appointment.ImageFile" class="form-label fw-bold"><i class="bi bi-image"></i> Patient Image (Optional)</label>
+                <input asp-for="Appointment.ImageFile" type="file" class="form-control" accept="image/*" />
+                <span asp-validation-for="Appointment.ImageFile" class="text-danger"></span>
+            </div>
+
+            <!-- Visit Details -->
+            <h5 class="fw-bold mt-4 mb-3">Visit Details</h5>
+            <div class="mb-3">
+                <label asp-for="Appointment.ReasonForVisit" class="form-label fw-bold"><i class="bi bi-sticky"></i> Reason for Visit</label>
+                <textarea asp-for="Appointment.ReasonForVisit" class="form-control" rows="3" placeholder="e.g. headache, follow-up for diabetes"></textarea>
+                <span asp-validation-for="Appointment.ReasonForVisit" class="text-danger"></span>
+            </div>
+
+            <!-- Payment -->
+            <h5 class="fw-bold mt-4 mb-3">Payment</h5>
+            <div class="mb-3">
+                <label asp-for="Appointment.PaymentMethod" class="form-label fw-bold"><i class="bi bi-cash"></i> Payment Method</label>
+                <select asp-for="Appointment.PaymentMethod" asp-items="Model.PaymentMethodList" class="form-select">
+                    <option value="">-- Select Payment Method --</option>
+                </select>
+                <span asp-validation-for="Appointment.PaymentMethod" class="text-danger"></span>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Confirm Appointment</button>
+                <a asp-area="Patient" asp-controller="Booking" asp-action="AppointmentSummary"
+                   asp-route-scheduleId="@Model.ScheduleId"
+                   asp-route-clinicId="@Model.ClinicId"
+                   asp-route-doctorId="@Model.DoctorId"
+                   class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Back to Summary</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,91 @@
+﻿@model AppointmentSummaryVM
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm text-center">
+        <img src="@Model.DoctorDisplayImageUrl" alt="Doctor Image"
+             class="rounded-circle shadow-sm mb-3"
+             style="width:180px; height:180px; object-fit:cover;" />
+        <h3 class="fw-bold text-primary mb-1">@Model.DoctorName</h3>
+        <p class="text-muted mb-0"><i class="bi bi-person"></i> Age: @Model.DoctorAge</p>
+        <p class="text-muted mb-0"><i class="bi bi-hospital"></i> Department: @Model.DepartmentName</p>
+        <small class="text-muted">@Model.DoctorAboutMe</small>
+    </div>
+
+    <div class="row g-4">
+        <!-- Clinic Info -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold text-success mb-3"><i class="bi bi-building"></i> @Model.ClinicName</h5>
+                    <p><i class="bi bi-geo-alt"></i> @Model.ClinicAddress</p>
+                    <p><i class="bi bi-telephone"></i> @Model.ClinicPhoneNumber</p>
+                    <p>
+                        <i class="bi bi-cash"></i> Consultation Price:
+                        <span class="badge bg-success">@Model.ConsultationPrice.ToString("C")</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedule Info -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold text-secondary mb-3">Schedule Details</h5>
+                    <p><i class="bi bi-calendar-week"></i> Day: <span class="badge bg-primary">@Model.ScheduleDayOfWeek</span></p>
+                    <p>
+                        <i class="bi bi-clock"></i>
+                        @DateTime.Today.Add(@Model.ScheduleStartTime).ToString("hh:mm tt") -
+                        @DateTime.Today.Add(@Model.ScheduleEndTime).ToString("hh:mm tt")
+                    </p>
+                    <p><i class="bi bi-hourglass-split"></i> Duration: @Model.AppointmentDuration minutes</p>
+                    <p><i class="bi bi-sticky"></i> Notes: @Model.ScheduleNotes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Info -->
+        <div class="col-md-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold text-info mb-3">Patient Information</h5>
+                    <img src="@Model.PatientDisplayImageUrl" alt="Patient Image"
+                         class="rounded-circle shadow-sm mb-3"
+                         style="width:120px; height:120px; object-fit:cover;" />
+                    <p><i class="bi bi-person"></i> Name: @Model.PatientName</p>
+                    <p><i class="bi bi-telephone"></i> Phone: @Model.PatientPhoneNumber</p>
+                    <p><i class="bi bi-geo-alt"></i> Address: @Model.PatientAddress</p>
+                    <p><i class="bi bi-gender-ambiguous"></i> Gender: @Model.PatientGender</p>
+                    <p><i class="bi bi-calendar"></i> Age: @Model.PatientAge</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-footer d-flex justify-content-between">
+            <a asp-action="BookAppointment" asp-controller="Booking" asp-area="Patient"
+               asp-route-doctorId="@Model.DoctorId"
+               asp-route-clinicId="@Model.ClinicId"
+               asp-route-scheduleId="@Model.ScheduleId"
+               class="btn btn-success">
+                <i class="bi bi-check-circle"></i> Continue with My Info
+            </a>
+            <a asp-action="BookForOther" asp-controller="Booking" asp-area="Patient"
+               asp-route-doctorId="@Model.DoctorId"
+               asp-route-clinicId="@Model.ClinicId"
+               asp-route-scheduleId="@Model.ScheduleId"
+               class="btn btn-warning">
+                <i class="bi bi-person-plus"></i> Book for Someone Else
+            </a>
+            <a asp-action="GetClinicSchedules" asp-controller="Booking" asp-area="Patient"
+               asp-route-doctorId="@Model.DoctorId"
+               asp-route-clinicId="@Model.ClinicId"
+               class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Schedules
+            </a>
+        </div>
+    </div>
+</div>

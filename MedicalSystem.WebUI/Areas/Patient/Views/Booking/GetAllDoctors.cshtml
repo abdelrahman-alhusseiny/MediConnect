@@ -1,0 +1,204 @@
+﻿@model DoctorListVM
+
+@{
+    ViewData["Title"] = "Doctor List";
+}
+
+<div class="container py-4">
+    <div class="page-header">
+        <div>
+            <h2 class="page-title"><i class="bi bi-people"></i> Doctor List</h2>
+            <p class="page-subtitle">Browse trusted specialists and choose the right care team for your needs.</p>
+        </div>
+        <div class="page-pill"><i class="bi bi-star-fill"></i> Rated providers</div>
+    </div>
+
+    <div class="filter-card mb-4">
+        <form asp-area="Patient" asp-controller="Booking" asp-action="GetAllDoctors" method="get" class="row g-3 align-items-end">
+            <input type="hidden" name="currentSort" value="@Model.CurrentSort" />
+            <input type="hidden" name="currentPage" value="1" />
+
+            <div class="col-md-4">
+                <label class="form-label">Search by name</label>
+                <input type="text" name="searchString" value="@Model.SearchString" class="form-control" placeholder="Search doctors..." />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Department</label>
+                <select name="departmentId" asp-items="Model.DepartmentList" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Departments</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 d-flex">
+                <a asp-area="Patient" asp-controller="Booking" asp-action="GetAllDoctors" class="btn btn-outline-primary btn-rounded w-100">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="page-toolbar mb-3">
+        <span class="fw-bold text-muted">Sort by:</span>
+        <a asp-area="Patient" asp-controller="Booking" asp-action="GetAllDoctors"
+           asp-route-currentSort="@Model.NameSort"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-departmentId="@Model.DepartmentId"
+           asp-route-currentPage="@Model.CurrentPage"
+           class="btn btn-sm btn-outline-primary btn-rounded">
+            Name
+            @if (Model.CurrentSort == "name")
+            {
+                <i class="bi bi-caret-up-fill"></i>
+            }
+            else if (Model.CurrentSort == "name_desc")
+            {
+                <i class="bi bi-caret-down-fill"></i>
+            }
+        </a>
+
+        <a asp-area="Patient" asp-controller="Booking" asp-action="GetAllDoctors"
+           asp-route-currentSort="@Model.RateSort"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-departmentId="@Model.DepartmentId"
+           asp-route-currentPage="@Model.CurrentPage"
+           class="btn btn-sm btn-outline-primary btn-rounded">
+            Rate
+            @if (Model.CurrentSort == "rate")
+            {
+                <i class="bi bi-caret-up-fill"></i>
+            }
+            else if (Model.CurrentSort == "rate_desc")
+            {
+                <i class="bi bi-caret-down-fill"></i>
+            }
+        </a>
+    </div>
+
+    @if (!Model.Doctors.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-exclamation-triangle"></i> No doctors available for the selected filters.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var item in Model.Doctors)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card-surface h-100 p-4">
+                        <img src="@item.DisplayImageUrl" alt="Doctor Image" class="rounded-circle mb-3 shadow-sm" style="width:100px; height:100px; object-fit:cover;" />
+
+                        <h5 class="fw-bold">@item.Doctor.FullName</h5>
+                        <p class="text-muted mb-1"><i class="bi bi-briefcase"></i> @item.DepartmentName</p>
+                        <p class="text-muted mb-1"><i class="bi bi-gender-ambiguous"></i> @item.Doctor.Gender</p>
+                        <p class="text-muted mb-3"><i class="bi bi-calendar"></i> Age: @item.Age</p>
+
+                        <p class="text-muted mb-3">
+                            @{ double avgRating = item.AverageRating ?? 0; }
+
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= (int)Math.Floor(avgRating))
+                                {
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                }
+                                else if (i == (int)Math.Ceiling(avgRating) && (avgRating - Math.Floor(avgRating)) > 0)
+                                {
+                                    <i class="bi bi-star-half text-warning"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-star text-warning"></i>
+                                }
+                            }
+                            <span class="text-muted">(@avgRating.ToString("0.0"))</span>
+                        </p>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <a asp-area="Patient" asp-controller="Booking"
+                               asp-action="GetDoctor" asp-route-doctorId="@item.Doctor.Id"
+                               asp-route-searchString="@Model.SearchString"
+                               asp-route-departmentId="@Model.DepartmentId"
+                               asp-route-currentSort="@Model.CurrentSort"
+                               asp-route-currentPage="@Model.CurrentPage"
+                               class="btn btn-outline-info btn-rounded">
+                                <i class="bi bi-eye"></i> View Profile
+                            </a>
+
+                            <a asp-area="Patient" asp-controller="Booking"
+                               asp-action="GetDoctorReviews" asp-route-doctorId="@item.Doctor.Id"
+                               asp-route-sourceView="@Model.SourceView"
+                               asp-route-searchString="@Model.SearchString"
+                               asp-route-departmentId="@Model.DepartmentId"
+                               asp-route-currentSort="@Model.CurrentSort"
+                               asp-route-currentPage="@Model.CurrentPage"
+                               class="btn btn-outline-warning btn-rounded">
+                                <i class="bi bi-star"></i> Reviews
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <nav aria-label="Page navigation" class="mt-3">
+            <ul class="pagination justify-content-center">
+                @if (Model.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a asp-area="Patient" asp-controller="Booking" asp-action="GetAllDoctors"
+                           asp-route-currentPage="@(Model.CurrentPage - 1)"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-departmentId="@Model.DepartmentId"
+                           asp-route-currentSort="@Model.CurrentSort"
+                           class="page-link">
+                            Previous
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">Previous</span>
+                    </li>
+                }
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a asp-area="Patient" asp-controller="Booking"
+                           asp-action="GetAllDoctors"
+                           asp-route-currentPage="@i"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-departmentId="@Model.DepartmentId"
+                           asp-route-currentSort="@Model.CurrentSort"
+                           class="page-link">
+                            @i
+                        </a>
+                    </li>
+                }
+
+                @if (Model.CurrentPage < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a asp-area="Patient" asp-controller="Booking" asp-action="GetAllDoctors"
+                           asp-route-currentPage="@(Model.CurrentPage + 1)"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-departmentId="@Model.DepartmentId"
+                           asp-route-currentSort="@Model.CurrentSort"
+                           class="page-link">
+                            Next
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">Next</span>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }

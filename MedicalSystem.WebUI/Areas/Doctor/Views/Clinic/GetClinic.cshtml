@@ -1,0 +1,64 @@
+﻿@model ClinicVM
+
+@{
+    ViewData["Title"] = "Clinic Details";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-0"><i class="bi bi-info-circle"></i> Clinic Details</h2>
+        <p class="text-muted mb-0">Review clinic information and manage actions.</p>
+    </div>
+
+    <!-- Clinic Details Card -->
+    <div class="card shadow-sm p-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <h6 class="fw-bold"><i class="bi bi-tag"></i> Name</h6>
+                <p class="text-muted mb-0">@Model.Clinic.Name</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="fw-bold"><i class="bi bi-geo-alt"></i> Address</h6>
+                <p class="text-muted mb-0">@Model.Clinic.Address</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="fw-bold"><i class="bi bi-phone"></i> Phone Number</h6>
+                <p class="text-muted mb-0">@Model.Clinic.PhoneNumber</p>
+            </div>
+            <div class="col-md-6">
+                <h6 class="fw-bold"><i class="bi bi-currency-exchange"></i> Consultation Price</h6>
+                <p class="text-success fw-bold mb-0">@Model.Clinic.ConsultationPrice.ToString("C")</p>
+            </div>
+            <div class="col-md-12">
+                <h6 class="fw-bold"><i class="bi bi-clock-history"></i> Account Created On</h6>
+                <p class="text-muted mb-0">@Model.Clinic.CreatedAt.ToString("yyyy-MM-dd")</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-4 d-flex flex-wrap gap-2">
+        <a asp-area="Doctor" asp-controller="Clinic" asp-action="GetAllClinics"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-currentSort="@Model.CurrentSort"
+           asp-route-currentPage="@Model.CurrentPage"
+           class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Back to List</a>
+
+        <a asp-area="Doctor" asp-controller="Clinic" asp-action="EditClinic"
+           asp-route-id="@Model.Clinic.Id"
+           asp-route-sourceView="@Model.SourceView"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-currentSort="@Model.CurrentSort"
+           asp-route-currentPage="@Model.CurrentPage"
+           class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</a>
+
+        <a asp-area="Doctor" asp-controller="Clinic" asp-action="DeleteClinic"
+           asp-route-id="@Model.Clinic.Id"
+           asp-route-sourceView="@Model.SourceView"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-currentSort="@Model.CurrentSort"
+           asp-route-currentPage="@Model.CurrentPage"
+           class="btn btn-danger"><i class="bi bi-trash"></i> Delete</a>
+    </div>
+</div>

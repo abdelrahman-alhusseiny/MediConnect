@@ -1,0 +1,124 @@
+﻿@model DoctorVM
+
+@{
+    ViewData["Title"] = "Doctor Profile";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <img src="@Model.DisplayImageUrl" alt="Profile Image"
+             class="rounded-circle shadow-sm mb-3"
+             style="width:200px; height:200px; object-fit:cover;" />
+        <h2 class="fw-bold"><i class="bi bi-person-circle"></i> @Model.Doctor.FullName</h2>
+    </div>
+
+    <!-- Info Grid -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-envelope"></i> Email</h6>
+                <p class="text-muted mb-0">@Model.AppUserEmail</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-telephone"></i> Phone Number</h6>
+                <p class="text-muted mb-0">@Model.Doctor.PhoneNumber</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-geo-alt"></i> Address</h6>
+                <p class="text-muted mb-0">@Model.Doctor.Address</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-gender-ambiguous"></i> Gender</h6>
+                <p class="text-muted mb-0">@Model.Doctor.Gender</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-calendar"></i> Date of Birth</h6>
+                <p class="text-muted mb-0">@Model.Doctor.DateOfBirth.ToString("yyyy-MM-dd")</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-building"></i> Department</h6>
+                <p class="text-muted mb-0">@Model.DepartmentName</p>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-info-circle"></i> About Me</h6>
+                <p class="text-muted mb-0">@Model.Doctor.AboutMe</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-lock"></i> Lockout Status</h6>
+                <p class="text-muted mb-0">@Model.AppUserLockoutStatus</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-clock-history"></i> Account Created On</h6>
+                <p class="text-muted mb-0">@Model.Doctor.CreatedAt.ToString("yyyy-MM-dd")</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            <a asp-area="Admin" asp-controller="Doctor" asp-action="GetAllDoctors"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-lockoutStatus="@Model.LockoutStatus"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Back to List</a>
+            <a asp-area="Admin" asp-controller="Doctor" asp-action="EditDoctor"
+               asp-route-id="@Model.Doctor.Id"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-lockoutStatus="@Model.LockoutStatus"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit Profile</a>
+            <form asp-area="Admin" asp-controller="Doctor" asp-action="ToggleDoctorLock" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input asp-for="Doctor.Id" type="hidden" />
+                <input asp-for="SourceView" type="hidden" />
+                <input asp-for="SearchString" type="hidden" />
+                <input asp-for="LockoutStatus" type="hidden" />
+                <input asp-for="CurrentSort" type="hidden" />
+                <input asp-for="CurrentPage" type="hidden" />
+                @if (Model.AppUserLockoutStatus == "Locked")
+                {
+                    <button type="submit" class="btn btn-success"><i class="bi bi-unlock-fill"></i> Unlock</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-secondary"><i class="bi bi-lock-fill"></i> Lock</button>
+                }
+            </form>
+            <a asp-area="Admin" asp-controller="Doctor" asp-action="ResetDoctorPassword"
+               asp-route-id="@Model.Doctor.Id"
+               asp-route-sourceView="@Model.SourceView"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-lockoutStatus="@Model.LockoutStatus"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-primary"><i class="bi bi-key"></i> Reset Password</a>
+            <a asp-area="Admin" asp-controller="Doctor" asp-action="DeleteDoctor"
+               asp-route-id="@Model.Doctor.Id"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-lockoutStatus="@Model.LockoutStatus"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-danger"><i class="bi bi-trash"></i> Delete Account</a>
+        </div>
+    </div>
+</div>

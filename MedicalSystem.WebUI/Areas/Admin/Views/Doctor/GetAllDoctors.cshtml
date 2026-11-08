@@ -1,0 +1,165 @@
+﻿@model DoctorListVM
+
+@{
+    ViewData["Title"] = "Doctor List";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm d-flex justify-content-between align-items-center">
+        <h2 class="fw-bold mb-0"><i class="bi bi-people"></i> Doctor List</h2>
+        <a asp-area="Admin" asp-controller="Doctor" asp-action="RegisterDoctor"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-lockoutStatus="@Model.LockoutStatus"
+           asp-route-currentSort="@Model.CurrentSort"
+           asp-route-currentPage="@Model.CurrentPage"
+           class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Register New Doctor
+        </a>
+    </div>
+
+    <!-- Filter Panel -->
+    <div class="card p-3 mb-4 shadow-sm">
+        <form asp-area="Admin" asp-controller="Doctor" asp-action="GetAllDoctors" method="get" class="row g-3 align-items-end">
+            <input type="hidden" name="currentSort" value="@Model.CurrentSort" />
+            <input type="hidden" name="currentPage" value="1" />
+
+            <div class="col-md-5">
+                <label class="form-label">Search doctors</label>
+                <input type="text" name="searchString" value="@Model.SearchString" class="form-control" placeholder="Search doctors..." />
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Account Status</label>
+                <select name="lockoutStatus" asp-items="Model.LockoutStatusList" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Accounts</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <a asp-area="Admin" asp-controller="Doctor" asp-action="GetAllDoctors" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Sort Toolbar -->
+    <div class="mb-3">
+        <span class="fw-bold me-2">Sort by:</span>
+        <a asp-area="Admin" asp-controller="Doctor" asp-action="GetAllDoctors"
+           asp-route-currentSort="@Model.NameSort"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-lockoutStatus="@Model.LockoutStatus"
+           asp-route-currentPage="@Model.CurrentPage"
+           class="btn btn-sm btn-outline-primary me-2">
+            Name
+            @if (Model.CurrentSort == "name")
+            {
+                <i class="bi bi-caret-up-fill"></i>
+            }
+            else if (Model.CurrentSort == "name_desc")
+            {
+
+                <i class="bi bi-caret-down-fill"></i>
+            }
+        </a>
+        <a asp-area="Admin" asp-controller="Doctor" asp-action="GetAllDoctors"
+           asp-route-currentSort="@Model.CreatedAtSort"
+           asp-route-searchString="@Model.SearchString"
+           asp-route-lockoutStatus="@Model.LockoutStatus"
+           asp-route-currentPage="@Model.CurrentPage"
+           class="btn btn-sm btn-outline-primary">
+            Created At
+            @if (Model.CurrentSort == "created")
+            {
+                <i class="bi bi-caret-up-fill"></i>
+            }
+            else if (Model.CurrentSort == "created_desc")
+            {
+
+                <i class="bi bi-caret-down-fill"></i>
+            }
+        </a>
+    </div>
+
+    <!-- Doctor Cards -->
+    @if (!Model.Doctors.Any())
+    {
+        <div class="alert alert-warning shadow-sm">
+            <i class="bi bi-exclamation-triangle"></i> No doctors available.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var item in Model.Doctors)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <img src="@item.DisplayImageUrl" alt="Doctor Image"
+                                 class="rounded-circle shadow-sm mb-3"
+                                 style="width:80px; height:80px; object-fit:cover;" />
+                            <h5 class="fw-bold">@item.Doctor.FullName</h5>
+                            <p class="text-muted mb-1"><i class="bi bi-envelope"></i> @item.AppUserEmail</p>
+                            <p class="mb-1"><i class="bi bi-lock"></i> @item.AppUserLockoutStatus</p>
+                            <p class="mb-2"><i class="bi bi-clock-history"></i> @item.Doctor.CreatedAt.ToString("yyyy-MM-dd")</p>
+                        </div>
+                        <div class="card-footer d-flex flex-wrap gap-2 justify-content-center">
+                            <a asp-area="Admin" asp-controller="Doctor" asp-action="GetDoctor" asp-route-id="@item.Doctor.Id"
+                               asp-route-searchString="@Model.SearchString"
+                               asp-route-lockoutStatus="@Model.LockoutStatus"
+                               asp-route-currentSort="@Model.CurrentSort"
+                               asp-route-currentPage="@Model.CurrentPage"
+                               class="btn btn-sm btn-info"><i class="bi bi-eye"></i> Details</a>
+                            <form asp-area="Admin" asp-controller="Doctor" asp-action="ToggleDoctorLock" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="Doctor.id" value="@item.Doctor.Id" />
+                                <input type="hidden" name="sourceView" value="@Model.SourceView" />
+                                <input type="hidden" name="searchString" value="@Model.SearchString" />
+                                <input type="hidden" name="lockoutStatus" value="@Model.LockoutStatus" />
+                                <input type="hidden" name="currentSort" value="@Model.CurrentSort" />
+                                <input type="hidden" name="currentPage" value="@Model.CurrentPage" />
+                                @if (item.AppUserLockoutStatus == "Locked")
+                                {
+                                    <button type="submit" class="btn btn-sm btn-success"><i class="bi bi-unlock-fill"></i> Unlock</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-sm btn-secondary"><i class="bi bi-lock-fill"></i> Lock</button>
+                                }
+                            </form>
+                            <a asp-area="Admin" asp-controller="Doctor" asp-action="ResetDoctorPassword" asp-route-id="@item.Doctor.Id"
+                               asp-route-sourceView="@Model.SourceView"
+                               asp-route-searchString="@Model.SearchString"
+                               asp-route-lockoutStatus="@Model.LockoutStatus"
+                               asp-route-currentSort="@Model.CurrentSort"
+                               asp-route-currentPage="@Model.CurrentPage"
+                               class="btn btn-sm btn-warning"><i class="bi bi-key"></i> Reset Password</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a asp-area="Admin" asp-controller="Doctor" asp-action="GetAllDoctors"
+                           asp-route-currentPage="@i"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-lockoutStatus="@Model.LockoutStatus"
+                           asp-route-currentSort="@Model.CurrentSort"
+                           class="page-link">
+                            @i
+                           </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>

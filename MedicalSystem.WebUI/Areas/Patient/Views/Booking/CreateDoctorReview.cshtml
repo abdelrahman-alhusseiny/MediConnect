@@ -1,0 +1,59 @@
+﻿@model DoctorReviewVM
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-0"><i class="bi bi-star"></i> Add Review for Doctor</h2>
+        <p class="text-muted mb-0">Share your rating and feedback for this doctor.</p>
+    </div>
+
+    <!-- Review Form -->
+    <div class="card shadow-sm p-4">
+        <form asp-action="CreateDoctorReviewConfirmed" asp-controller="Booking" asp-area="Patient" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Hidden Fields -->
+            <input type="hidden" asp-for="DoctorId" />
+            <input type="hidden" asp-for="SourceView" />
+            <input type="hidden" asp-for="SearchString" />
+            <input type="hidden" asp-for="DepartmentId" />
+            <input type="hidden" asp-for="CurrentSort" />
+            <input type="hidden" asp-for="CurrentPage" />
+            <input type="hidden" asp-for="DoctorReview.Doctor" />
+
+            <!-- Rating -->
+            <div class="mb-3">
+                <label asp-for="DoctorReview.Rating" class="form-label fw-bold"><i class="bi bi-star-fill"></i> Rating</label>
+                <select asp-for="DoctorReview.Rating" asp-items="Model.RatingList" class="form-select">
+                    <option value="">-- Select Rating --</option>
+                </select>
+                <span asp-validation-for="DoctorReview.Rating" class="text-danger"></span>
+            </div>
+
+            <!-- Comment -->
+            <div class="mb-3">
+                <label asp-for="DoctorReview.Comment" class="form-label fw-bold"><i class="bi bi-chat-text"></i> Comment</label>
+                <textarea asp-for="DoctorReview.Comment" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="DoctorReview.Comment" class="text-danger"></span>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-warning"><i class="bi bi-send"></i> Submit Review</button>
+                <a asp-area="Patient" asp-controller="Booking" asp-action="GetDoctorReviews"
+                   asp-route-doctorId="@Model.DoctorId"
+                   asp-route-sourceView="@Model.SourceView"
+                   asp-route-searchString="@Model.SearchString"
+                   asp-route-departmentId="@Model.DepartmentId"
+                   asp-route-currentSort="@Model.CurrentSort"
+                   asp-route-currentPage="@Model.CurrentPage"
+                   class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Back to Reviews</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

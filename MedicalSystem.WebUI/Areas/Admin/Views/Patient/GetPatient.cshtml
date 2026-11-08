@@ -1,0 +1,112 @@
+﻿@model PatientVM
+
+@{
+    ViewData["Title"] = "Patient Profile";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <img src="@Model.DisplayImageUrl" alt="Profile Image"
+             class="rounded-circle shadow-sm mb-3"
+             style="width:200px; height:200px; object-fit:cover;" />
+        <h2 class="fw-bold"><i class="bi bi-person-circle"></i> @Model.Patient.FullName</h2>
+    </div>
+
+    <!-- Info Grid -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-envelope"></i> Email</h6>
+                <p class="text-muted mb-0">@Model.AppUserEmail</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-telephone"></i> Phone Number</h6>
+                <p class="text-muted mb-0">@Model.Patient.PhoneNumber</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-geo-alt"></i> Address</h6>
+                <p class="text-muted mb-0">@Model.Patient.Address</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-gender-ambiguous"></i> Gender</h6>
+                <p class="text-muted mb-0">@Model.Patient.Gender</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-calendar"></i> Date of Birth</h6>
+                <p class="text-muted mb-0">@Model.Patient.DateOfBirth.ToString("yyyy-MM-dd")</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-lock"></i> Lockout Status</h6>
+                <p class="text-muted mb-0">@Model.AppUserLockoutStatus</p>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-clock-history"></i> Account Created On</h6>
+                <p class="text-muted mb-0">@Model.Patient.CreatedAt.ToString("yyyy-MM-dd")</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            <a asp-area="Admin" asp-controller="Patient" asp-action="GetAllPatients"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-lockoutStatus="@Model.LockoutStatus"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Back to List</a>
+            <a asp-area="Admin" asp-controller="Patient" asp-action="EditPatient"
+               asp-route-id="@Model.Patient.Id"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-lockoutStatus="@Model.LockoutStatus"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit Profile</a>
+            <form asp-area="Admin" asp-controller="Patient" asp-action="TogglePatientLock" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input asp-for="Patient.Id" type="hidden" />
+                <input asp-for="SourceView" type="hidden" />
+                <input asp-for="SearchString" type="hidden" />
+                <input asp-for="LockoutStatus" type="hidden" />
+                <input asp-for="CurrentSort" type="hidden" />
+                <input asp-for="CurrentPage" type="hidden" />
+                @if (Model.AppUserLockoutStatus == "Locked")
+                {
+                    <button type="submit" class="btn btn-success"><i class="bi bi-unlock-fill"></i> Unlock</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-secondary"><i class="bi bi-lock-fill"></i> Lock</button>
+                }
+            </form>
+            <a asp-area="Admin" asp-controller="Patient" asp-action="ResetPatientPassword"
+               asp-route-id="@Model.Patient.Id"
+               asp-route-sourceView="@Model.SourceView"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-lockoutStatus="@Model.LockoutStatus"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-primary"><i class="bi bi-key"></i> Reset Password</a>
+            <a asp-area="Admin" asp-controller="Patient" asp-action="DeletePatient"
+               asp-route-id="@Model.Patient.Id"
+               asp-route-searchString="@Model.SearchString"
+               asp-route-lockoutStatus="@Model.LockoutStatus"
+               asp-route-currentSort="@Model.CurrentSort"
+               asp-route-currentPage="@Model.CurrentPage"
+               class="btn btn-danger"><i class="bi bi-trash"></i> Delete Account</a>
+        </div>
+    </div>
+</div>

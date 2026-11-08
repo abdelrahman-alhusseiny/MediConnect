@@ -1,0 +1,68 @@
+﻿@model ClinicVM
+
+@{
+    ViewData["Title"] = "Create Clinic";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-0"><i class="bi bi-plus-circle"></i> Create Clinic</h2>
+        <p class="text-muted mb-0">Add a new clinic with essential details.</p>
+    </div>
+
+    <!-- Create Clinic Form -->
+    <div class="card shadow-sm p-4">
+        <form asp-area="Doctor" asp-controller="Clinic" asp-action="CreateClinic" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Hidden Fields -->
+            <input asp-for="SearchString" type="hidden" />
+            <input asp-for="CurrentSort" type="hidden" />
+            <input asp-for="CurrentPage" type="hidden" />
+
+            <!-- Clinic Name -->
+            <div class="mb-3">
+                <label asp-for="Clinic.Name" class="form-label fw-bold"><i class="bi bi-tag"></i> Clinic Name</label>
+                <input asp-for="Clinic.Name" class="form-control" placeholder="Enter clinic name" />
+                <span asp-validation-for="Clinic.Name" class="text-danger"></span>
+            </div>
+
+            <!-- Clinic Address -->
+            <div class="mb-3">
+                <label asp-for="Clinic.Address" class="form-label fw-bold"><i class="bi bi-geo-alt"></i> Clinic Address</label>
+                <input asp-for="Clinic.Address" class="form-control" placeholder="Enter clinic address" />
+                <span asp-validation-for="Clinic.Address" class="text-danger"></span>
+            </div>
+
+            <!-- Clinic Phone -->
+            <div class="mb-3">
+                <label asp-for="Clinic.PhoneNumber" class="form-label fw-bold"><i class="bi bi-phone"></i> Clinic Phone Number</label>
+                <input asp-for="Clinic.PhoneNumber" class="form-control" placeholder="Enter phone number" />
+                <span asp-validation-for="Clinic.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Consultation Price -->
+            <div class="mb-3">
+                <label asp-for="Clinic.ConsultationPrice" class="form-label fw-bold"><i class="bi bi-currency-exchange"></i> Consultation Price</label>
+                <input asp-for="Clinic.ConsultationPrice" class="form-control" placeholder="Enter consultation price" />
+                <span asp-validation-for="Clinic.ConsultationPrice" class="text-danger"></span>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Save</button>
+                <a asp-area="Doctor" asp-controller="Clinic" asp-action="GetAllClinics"
+                   asp-route-searchString="@Model.SearchString"
+                   asp-route-currentSort="@Model.CurrentSort"
+                   asp-route-currentPage="@Model.CurrentPage"
+                   class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

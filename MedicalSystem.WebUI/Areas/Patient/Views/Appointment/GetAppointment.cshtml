@@ -1,0 +1,118 @@
+﻿@model AppointmentVM
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-0"><i class="bi bi-calendar2-week"></i> Appointment Details</h2>
+            <p class="text-muted mb-0">A complete overview of your care session, payment progress, and visit context.</p>
+        </div>
+        <div class="badge bg-info rounded-pill"><i class="bi bi-heart-pulse"></i> Care Summary</div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Doctor Info -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm text-center p-3">
+                <img src="@Model.DoctorDisplayImageUrl" alt="Doctor Image" class="rounded-circle shadow-sm mb-3" style="width: 140px; height: 140px; object-fit: cover;" />
+                <h5 class="fw-bold text-primary">@Model.DoctorName</h5>
+                <p class="mb-1"><i class="bi bi-person"></i> Age: @Model.DoctorAge</p>
+                <p class="mb-1"><i class="bi bi-hospital"></i> Department: @Model.DepartmentName</p>
+                <small class="text-muted d-block">@Model.DoctorAboutMe</small>
+            </div>
+        </div>
+
+        <!-- Appointment Info -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h4 class="fw-bold text-success mb-1"><i class="bi bi-building"></i> @Model.ClinicName</h4>
+                        <p class="text-muted mb-0">@Model.ClinicAddress</p>
+                    </div>
+                    <span class="badge bg-success-subtle text-success">@Model.Appointment.Status</span>
+                </div>
+
+                <!-- Clinic & Appointment Grid -->
+                <div class="row row-cols-2 g-3">
+                    <div class="col"><strong>Address:</strong> @Model.ClinicAddress</div>
+                    <div class="col"><strong>Phone:</strong> @Model.ClinicPhoneNumber</div>
+                    <div class="col"><strong>Consultation Fee:</strong> @Model.ConsultationPrice?.ToString("C")</div>
+                    <div class="col"><strong>Scheduled Day:</strong> @Model.ScheduleDayOfWeek</div>
+                    <div class="col"><strong>Date:</strong> @Model.Appointment.AppointmentDate.ToString("dd/MM/yyyy")</div>
+                    <div class="col"><strong>Time:</strong> @DateTime.Today.Add(Model.Appointment.AppointmentTime).ToString("hh:mm tt")</div>
+                    <div class="col"><strong>Duration:</strong> @Model.AppointmentDuration minutes</div>
+                    <div class="col"><strong>Notes:</strong> @Model.ScheduleNotes</div>
+                </div>
+
+                <hr />
+
+                <!-- Patient Info -->
+                <h5 class="fw-bold text-info mb-3"><i class="bi bi-person-vcard"></i> Patient Information</h5>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <img src="@Model.PatientDisplayImageUrl" alt="Patient Image" class="rounded-circle border shadow-sm" style="width: 70px; height: 70px; object-fit: cover;" />
+                    <div>
+                        <div class="fw-semibold">@Model.Appointment.PatientName</div>
+                        <div class="text-muted">@Model.Appointment.PatientPhoneNumber</div>
+                    </div>
+                </div>
+
+                <div class="row row-cols-2 g-3">
+                    <div class="col"><strong>Address:</strong> @Model.Appointment.PatientAddress</div>
+                    <div class="col"><strong>Gender:</strong> @Model.Appointment.PatientGender</div>
+                    <div class="col"><strong>Age:</strong> @Model.Appointment.PatientAge</div>
+                    <div class="col"><strong>Reason:</strong> @Model.Appointment.ReasonForVisit</div>
+                </div>
+
+                <!-- Payment Info -->
+                <div class="row row-cols-2 g-3 mt-3">
+                    <div class="col"><strong>Payment Method:</strong> @Model.Appointment.PaymentMethod</div>
+                    <div class="col"><strong>Payment Status:</strong> @Model.PaymentStatus</div>
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-4 d-flex flex-wrap gap-2">
+                    <a asp-area="Patient" asp-controller="Appointment" asp-action="GetAllAppointments"
+                       asp-route-searchString="@Model.SearchString"
+                       asp-route-dayOfWeek="@Model.DayOfWeek"
+                       asp-route-currentSort="@Model.CurrentSort"
+                       asp-route-currentPage="@Model.CurrentPage"
+                       class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Back to List</a>
+
+                    @if (Model.IsPending)
+                    {
+                        <a asp-area="Patient" asp-controller="Appointment" asp-action="EditAppointment"
+                           asp-route-id="@Model.Appointment.Id"
+                           asp-route-sourceView="@Model.SourceView"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-dayOfWeek="@Model.DayOfWeek"
+                           asp-route-currentSort="@Model.CurrentSort"
+                           asp-route-currentPage="@Model.CurrentPage"
+                           class="btn btn-warning"><i class="bi bi-pencil"></i> Edit Appointment</a>
+
+                        <a asp-area="Patient" asp-controller="Appointment" asp-action="CancelAppointment"
+                           asp-route-id="@Model.Appointment.Id"
+                           asp-route-sourceView="@Model.SourceView"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-dayOfWeek="@Model.DayOfWeek"
+                           asp-route-currentSort="@Model.CurrentSort"
+                           asp-route-currentPage="@Model.CurrentPage"
+                           asp-route-id="@Model.Appointment.Id"
+                           class="btn btn-danger"><i class="bi bi-x-circle"></i> Cancel Appointment</a>
+                    }
+                    else if (Model.IsPayable)
+                    {
+                        <a asp-area="Patient" asp-controller="Appointment" asp-action="PayAppointmentByCard"
+                           asp-route-id="@Model.Appointment.Id"
+                           asp-route-sourceView="@Model.SourceView"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-dayOfWeek="@Model.DayOfWeek"
+                           asp-route-currentSort="@Model.CurrentSort"
+                           asp-route-currentPage="@Model.CurrentPage"
+                           class="btn btn-success"><i class="bi bi-credit-card"></i> Pay Now</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

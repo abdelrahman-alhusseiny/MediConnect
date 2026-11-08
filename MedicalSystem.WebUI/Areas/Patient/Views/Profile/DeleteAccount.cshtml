@@ -1,0 +1,88 @@
+﻿@model PatientVM
+
+@{
+    ViewData["Title"] = "Delete Account";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold text-danger mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Delete Account</h2>
+        <p class="text-muted mb-0">Deleting your account is permanent and cannot be undone.</p>
+    </div>
+
+    <!-- Warning Alert -->
+    <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-x-circle-fill me-2"></i>
+        <div><strong>Are you sure?</strong> This action cannot be undone.</div>
+    </div>
+
+    <!-- Profile Image -->
+    <div class="text-center mb-4">
+        <img src="@Model.DisplayImageUrl" alt="Profile Image"
+             class="rounded-circle shadow-sm"
+             style="width:200px; height:200px; object-fit:cover;" />
+    </div>
+
+    <!-- Patient Info -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-person"></i> Full Name</h6>
+                <p class="text-muted mb-0">@Model.Patient.FullName</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-envelope"></i> Email</h6>
+                <p class="text-muted mb-0">@Model.AppUserEmail</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-telephone"></i> Phone Number</h6>
+                <p class="text-muted mb-0">@Model.Patient.PhoneNumber</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-geo-alt"></i> Address</h6>
+                <p class="text-muted mb-0">@Model.Patient.Address</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-gender-ambiguous"></i> Gender</h6>
+                <p class="text-muted mb-0">@Model.Patient.Gender</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-calendar"></i> Date of Birth</h6>
+                <p class="text-muted mb-0">@Model.Patient.DateOfBirth.ToString("yyyy-MM-dd")</p>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card shadow-sm p-3">
+                <h6 class="fw-bold"><i class="bi bi-clock-history"></i> Account Created On</h6>
+                <p class="text-muted mb-0">@Model.Patient.CreatedAt.ToString("yyyy-MM-dd")</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Form -->
+    <div class="card shadow-sm">
+        <div class="card-footer d-flex flex-wrap gap-2 justify-content-end">
+            <form asp-area="Patient" asp-controller="Profile" asp-action="DeleteAccount" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <button type="submit" class="btn btn-danger"><i class="bi bi-trash-fill"></i> Confirm Delete</button>
+            </form>
+            <a asp-area="Patient" asp-controller="Profile" asp-action="GetProfile" class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Cancel</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

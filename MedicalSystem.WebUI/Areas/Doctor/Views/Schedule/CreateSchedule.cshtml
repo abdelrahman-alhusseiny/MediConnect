@@ -1,0 +1,88 @@
+﻿@model ScheduleVM
+
+@{
+    ViewData["Title"] = "Create Schedule";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-0"><i class="bi bi-plus-circle"></i> Create Schedule</h2>
+        <p class="text-muted mb-0">Add a new schedule for clinic appointments.</p>
+    </div>
+
+    <!-- Create Schedule Form -->
+    <div class="card shadow-sm p-4">
+        <form asp-area="Doctor" asp-controller="Schedule" asp-action="CreateSchedule" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Hidden Fields -->
+            <input asp-for="ClinicId" type="hidden" />
+            <input asp-for="DayOfWeek" type="hidden" />
+            <input asp-for="CurrentSort" type="hidden" />
+            <input asp-for="CurrentPage" type="hidden" />
+
+            <!-- Clinic -->
+            <div class="mb-3">
+                <label asp-for="Schedule.ClinicId" class="form-label fw-bold"><i class="bi bi-hospital"></i> Clinic</label>
+                <select asp-for="Schedule.ClinicId" asp-items="Model.ClinicList" class="form-select">
+                    <option value="">-- Select Clinic --</option>
+                </select>
+                <span asp-validation-for="Schedule.ClinicId" class="text-danger"></span>
+            </div>
+
+            <!-- Day Of Week -->
+            <div class="mb-3">
+                <label asp-for="Schedule.DayOfWeek" class="form-label fw-bold"><i class="bi bi-calendar-week"></i> Day Of Week</label>
+                <select asp-for="Schedule.DayOfWeek" asp-items="Model.DayOfWeekList" class="form-select">
+                    <option value="">-- Select Day --</option>
+                </select>
+                <span asp-validation-for="Schedule.DayOfWeek" class="text-danger"></span>
+            </div>
+
+            <!-- Start Time -->
+            <div class="mb-3">
+                <label asp-for="Schedule.StartTime" class="form-label fw-bold"><i class="bi bi-clock"></i> Start Time</label>
+                <input asp-for="Schedule.StartTime" class="form-control" type="time" />
+                <span asp-validation-for="Schedule.StartTime" class="text-danger"></span>
+            </div>
+
+            <!-- End Time -->
+            <div class="mb-3">
+                <label asp-for="Schedule.EndTime" class="form-label fw-bold"><i class="bi bi-clock-fill"></i> End Time</label>
+                <input asp-for="Schedule.EndTime" class="form-control" type="time" />
+                <span asp-validation-for="Schedule.EndTime" class="text-danger"></span>
+            </div>
+
+            <!-- Appointment Duration -->
+            <div class="mb-3">
+                <label asp-for="Schedule.AppointmentDuration" class="form-label fw-bold"><i class="bi bi-hourglass-split"></i> Appointment Duration (minutes)</label>
+                <input asp-for="Schedule.AppointmentDuration" class="form-control" type="number" min="5" max="120" />
+                <span asp-validation-for="Schedule.AppointmentDuration" class="text-danger"></span>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-3">
+                <label asp-for="Schedule.Notes" class="form-label fw-bold"><i class="bi bi-sticky"></i> Notes (Optional)</label>
+                <textarea asp-for="Schedule.Notes" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Schedule.Notes" class="text-danger"></span>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Save</button>
+                <a asp-area="Doctor" asp-controller="Schedule" asp-action="GetAllSchedules"
+                   asp-route-clinicId="@Model.ClinicId"
+                   asp-route-dayOfWeek="@Model.DayOfWeek"
+                   asp-route-currentSort="@Model.CurrentSort"
+                   asp-route-currentPage="@Model.CurrentPage"
+                   class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

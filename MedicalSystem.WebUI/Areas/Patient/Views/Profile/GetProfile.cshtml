@@ -1,0 +1,100 @@
+﻿@model PatientVM
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold mb-2"><i class="bi bi-person-circle"></i> My Profile</h2>
+            <p class="text-muted mb-0">Manage your account details, personal information, and security settings.</p>
+        </div>
+        <div class="badge bg-primary-subtle text-primary"><i class="bi bi-shield-lock"></i> Account Center</div>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="card shadow-sm p-4">
+        <div class="d-flex align-items-center mb-4">
+            <img src="@Model.DisplayImageUrl" alt="Profile Image"
+                 class="rounded-circle shadow-sm me-3"
+                 style="width:120px; height:120px; object-fit:cover;" />
+            <div>
+                <h3 class="fw-bold mb-1">@Model.Patient.FullName</h3>
+                <p class="text-muted mb-2">Patient account • Member since @Model.Patient.CreatedAt.ToString("yyyy-MM-dd")</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a asp-area="Patient" asp-controller="Profile" asp-action="EditProfile" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-pencil-square"></i> Edit Profile
+                    </a>
+                    <a asp-area="Patient" asp-controller="Profile" asp-action="ChangeAccountPassword" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-key"></i> Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm p-3">
+                    <h6 class="fw-bold mb-1">Email</h6>
+                    <p class="text-muted mb-0">@Model.AppUserEmail</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm p-3">
+                    <h6 class="fw-bold mb-1">Phone</h6>
+                    <p class="text-muted mb-0">@Model.Patient.PhoneNumber</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm p-3">
+                    <h6 class="fw-bold mb-1">Address</h6>
+                    <p class="text-muted mb-0">@Model.Patient.Address</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail Grid -->
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm p-3">
+                    <h6 class="fw-bold mb-1">Gender</h6>
+                    <p class="text-muted mb-0">@Model.Patient.Gender</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm p-3">
+                    <h6 class="fw-bold mb-1">Date of Birth</h6>
+                    <p class="text-muted mb-0">@Model.Patient.DateOfBirth.ToString("yyyy-MM-dd")</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm p-3">
+                    <h6 class="fw-bold mb-1">Account Created</h6>
+                    <p class="text-muted mb-0">@Model.Patient.CreatedAt.ToString("yyyy-MM-dd")</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm p-3">
+                    <h6 class="fw-bold mb-1">Security</h6>
+                    <p class="text-muted mb-0">Password protected</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-4 d-flex flex-wrap gap-2 justify-content-end">
+            <form asp-area="Identity" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </form>
+            <a asp-area="Patient" asp-controller="Profile" asp-action="DeleteAccount" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Delete Account
+            </a>
+        </div>
+    </div>
+</div>

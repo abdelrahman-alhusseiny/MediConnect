@@ -1,0 +1,106 @@
+﻿@model AppointmentVM
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm">
+        <h2 class="fw-bold text-danger mb-0"><i class="bi bi-exclamation-triangle"></i> Cancel Appointment</h2>
+        <p class="text-muted mb-0">This action is permanent and cannot be undone. Please review carefully before confirming.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Doctor Info -->
+        <div class="col-md-4 text-center">
+            <div class="card shadow-sm p-3">
+                <img src="@Model.DoctorDisplayImageUrl" alt="Doctor Image"
+                     class="rounded-circle shadow-sm mb-3" style="width:140px; height:140px; object-fit:cover;" />
+                <h5 class="fw-bold text-primary">@Model.DoctorName</h5>
+                <p class="mb-1"><i class="bi bi-person"></i> Age: @Model.DoctorAge</p>
+                <p class="mb-1"><i class="bi bi-hospital"></i> Department: @Model.DepartmentName</p>
+                <small class="text-muted">@Model.DoctorAboutMe</small>
+            </div>
+        </div>
+
+        <!-- Appointment Info -->
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4">
+                <!-- Warning Alert -->
+                <div class="alert alert-danger fw-bold mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> You are about to cancel this appointment. This action cannot be undone.
+                </div>
+
+                <!-- Clinic Info -->
+                <h4 class="fw-bold text-success mb-3"><i class="bi bi-building"></i> @Model.ClinicName</h4>
+                <div class="row row-cols-2 g-3 mb-3">
+                    <div class="col"><strong>Address:</strong> @Model.ClinicAddress</div>
+                    <div class="col"><strong>Phone:</strong> @Model.ClinicPhoneNumber</div>
+                    <div class="col"><strong>Price:</strong> @Model.ConsultationPrice?.ToString("C")</div>
+                </div>
+
+                <!-- Appointment Details -->
+                <h5 class="fw-bold text-secondary mb-3">Appointment Details</h5>
+                <div class="row row-cols-2 g-3 mb-3">
+                    <div class="col"><strong>Day:</strong> @Model.ScheduleDayOfWeek</div>
+                    <div class="col"><strong>Date:</strong> @Model.Appointment.AppointmentDate.ToString("dd/MM/yyyy")</div>
+                    <div class="col"><strong>Time:</strong> @DateTime.Today.Add(Model.Appointment.AppointmentTime).ToString("hh:mm tt")</div>
+                    <div class="col"><strong>Duration:</strong> @Model.AppointmentDuration minutes</div>
+                    <div class="col"><strong>Notes:</strong> @Model.ScheduleNotes</div>
+                    <div class="col">
+                        <strong>Status:</strong>
+                        <span class="badge
+                            @(Model.Appointment.Status == "Pending" ? "bg-warning text-dark" :
+                                                            Model.Appointment.Status == "Confirmed" ? "bg-info text-dark" :
+                                                            Model.Appointment.Status == "Completed" ? "bg-success" :
+                                                            Model.Appointment.Status == "Cancelled" ? "bg-danger" : "bg-secondary")">
+                            @Model.Appointment.Status
+                        </span>
+                    </div>
+                    <div class="col"><strong>Created At:</strong> @Model.Appointment.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")</div>
+                </div>
+
+                <!-- Patient Info -->
+                <h5 class="fw-bold text-info mb-3">Patient Information</h5>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <img src="@Model.PatientDisplayImageUrl" alt="Patient Image"
+                         class="rounded-circle border shadow-sm" style="width:100px; height:100px; object-fit:cover;" />
+                    <div>
+                        <div class="fw-semibold">@Model.Appointment.PatientName</div>
+                        <div class="text-muted">@Model.Appointment.PatientPhoneNumber</div>
+                    </div>
+                </div>
+                <div class="row row-cols-2 g-3 mb-3">
+                    <div class="col"><strong>Address:</strong> @Model.Appointment.PatientAddress</div>
+                    <div class="col"><strong>Gender:</strong> @Model.Appointment.PatientGender</div>
+                    <div class="col"><strong>Age:</strong> @Model.Appointment.PatientAge</div>
+                    <div class="col"><strong>Reason:</strong> @Model.Appointment.ReasonForVisit</div>
+                </div>
+
+                <p><strong>Payment Method:</strong> @Model.Appointment.PaymentMethod</p>
+
+                <!-- Cancel Form -->
+                <form asp-area="Patient" asp-controller="Appointment" asp-action="CancelAppointment" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Appointment.Id" />
+                    <input type="hidden" asp-for="SearchString" />
+                    <input type="hidden" asp-for="DayOfWeek" />
+                    <input type="hidden" asp-for="CurrentSort" />
+                    <input type="hidden" asp-for="CurrentPage" />
+
+                    <div class="mt-4 d-flex justify-content-between">
+                        <button type="submit" class="btn btn-danger"><i class="bi bi-x-circle"></i> Confirm Cancel Appointment</button>
+                        <a asp-area="Patient" asp-controller="Appointment" asp-action="@Model.SourceView"
+                           asp-route-id="@Model.Appointment.Id"
+                           asp-route-searchString="@Model.SearchString"
+                           asp-route-dayOfWeek="@Model.DayOfWeek"
+                           asp-route-currentSort="@Model.CurrentSort"
+                           asp-route-currentPage="@Model.CurrentPage"
+                           class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

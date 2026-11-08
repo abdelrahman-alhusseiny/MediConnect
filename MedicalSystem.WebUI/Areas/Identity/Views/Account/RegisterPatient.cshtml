@@ -1,0 +1,87 @@
+﻿@model RegisterPatientVM
+
+@{
+    ViewData["Title"] = "Register as Patient";
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="bg-light p-4 mb-4 rounded shadow-sm text-center">
+        <h2 class="fw-bold mb-2"><i class="bi bi-person-plus"></i> Register as Patient</h2>
+        <p class="text-muted mb-0">Set up your profile and start booking care with confidence.</p>
+    </div>
+
+    <!-- Register Patient Form -->
+    <div class="card shadow-sm p-4 p-md-5">
+        <form asp-area="Identity" asp-controller="Account" asp-action="RegisterPatient" method="post" enctype="multipart/form-data" novalidate>
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            <div class="row g-3">
+                <!-- Personal Info -->
+                <div class="col-md-6">
+                    <label asp-for="Patient.FullName" class="form-label fw-bold"><i class="bi bi-person"></i> Full Name</label>
+                    <input asp-for="Patient.FullName" class="form-control" aria-label="Full name" />
+                    <span asp-validation-for="Patient.FullName" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label fw-bold"><i class="bi bi-envelope"></i> Email</label>
+                    <input asp-for="Email" class="form-control" aria-label="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Patient.PhoneNumber" class="form-label fw-bold"><i class="bi bi-telephone"></i> Phone Number</label>
+                    <input asp-for="Patient.PhoneNumber" class="form-control" aria-label="Phone number" />
+                    <span asp-validation-for="Patient.PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Patient.Address" class="form-label fw-bold"><i class="bi bi-geo-alt"></i> Address</label>
+                    <input asp-for="Patient.Address" class="form-control" aria-label="Address" />
+                    <span asp-validation-for="Patient.Address" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Patient.Gender" class="form-label fw-bold"><i class="bi bi-gender-ambiguous"></i> Gender</label>
+                    <select asp-for="Patient.Gender" asp-items="Model.GenderList" class="form-select" aria-label="Gender">
+                        <option value="">-- Select Gender --</option>
+                    </select>
+                    <span asp-validation-for="Patient.Gender" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Patient.DateOfBirth" class="form-label fw-bold"><i class="bi bi-calendar"></i> Date of Birth</label>
+                    <input asp-for="Patient.DateOfBirth" type="date" class="form-control" aria-label="Date of birth" />
+                    <span asp-validation-for="Patient.DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <!-- Profile Image -->
+                <div class="col-md-6">
+                    <label asp-for="Patient.ImageFile" class="form-label fw-bold"><i class="bi bi-image"></i> Profile Image (Optional)</label>
+                    <input asp-for="Patient.ImageFile" type="file" class="form-control" accept="image/*" aria-label="Profile image" />
+                    <span asp-validation-for="Patient.ImageFile" class="text-danger"></span>
+                </div>
+
+                <!-- Account Credentials -->
+                <div class="col-md-6">
+                    <label asp-for="Password" class="form-label fw-bold"><i class="bi bi-lock"></i> Password</label>
+                    <input asp-for="Password" class="form-control" type="password" aria-label="Password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ConfirmPassword" class="form-label fw-bold"><i class="bi bi-lock-fill"></i> Confirm Password</label>
+                    <input asp-for="ConfirmPassword" class="form-control" type="password" aria-label="Confirm password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex justify-content-between">
+                <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Register</button>
+                <a asp-area="Identity" asp-controller="Account" asp-action="Login" class="btn btn-secondary"><i class="bi bi-arrow-left-circle"></i> Back to Login</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
