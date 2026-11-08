@@ -1,158 +1,103 @@
-\# MediConnect
-
-
+# MediConnect
 
 MediConnect is a healthcare management platform designed to improve communication and service delivery between patients and healthcare providers.
 
+---
 
-
-\---
-
-
-
-\## Overview
-
-
+## Overview
 
 MediConnect provides a centralized medical platform that allows patients to manage appointments and access healthcare services while enabling doctors and administrators to manage patient information and healthcare operations efficiently.
 
+---
 
+## Features
 
-\---
+### Authentication & Authorization
 
+- User Registration
 
+- User Login
 
-\## Features
+- Role-Based Authorization
 
+- Secure Authentication
 
+### Patient Features
 
-\### Authentication \& Authorization
+- View Personal Dashboard
 
+- Book Appointments
 
+- Manage Appointments
 
-\- User Registration
+- View Medical Information
 
-\- User Login
+- Update Profile Information
 
-\- Role-Based Authorization
+### Doctor Features
 
-\- Secure Authentication
+- Manage Appointments
 
+- View Patient Information
 
+- Manage Medical Records
 
-\### Patient Features
+- Update Availability Schedule
 
+### Admin Features
 
+- Manage Doctors
 
-\- View Personal Dashboard
+- Manage Patients
 
-\- Book Appointments
+- Manage Appointments
 
-\- Manage Appointments
+- Manage System Data
 
-\- View Medical Information
+### General Features
 
-\- Update Profile Information
+- Responsive User Interface
 
+- Notifications System
 
+- Profile Management
 
-\### Doctor Features
+- Data Validation
 
+---
 
+## Technologies Used
 
-\- Manage Appointments
+### Backend
 
-\- View Patient Information
+- ASP.NET Core MVC
 
-\- Manage Medical Records
+- C#
 
-\- Update Availability Schedule
+- Entity Framework Core
 
+- LINQ
 
+### Frontend
 
-\### Admin Features
+- HTML5
 
+- CSS3
 
+- Bootstrap 5
 
-\- Manage Doctors
+- JavaScript
 
-\- Manage Patients
+- jQuery
 
-\- Manage Appointments
+### Database
 
-\- Manage System Data
+- SQL Server
 
+---
 
+## Project Structure
 
-\### General Features
-
-
-
-\- Responsive User Interface
-
-\- Notifications System
-
-\- Profile Management
-
-\- Data Validation
-
-
-
-\---
-
-
-
-\## Technologies Used
-
-
-
-\### Backend
-
-
-
-\- ASP.NET Core MVC
-
-\- C#
-
-\- Entity Framework Core
-
-\- LINQ
-
-
-
-\### Frontend
-
-
-
-\- HTML5
-
-\- CSS3
-
-\- Bootstrap 5
-
-\- JavaScript
-
-\- jQuery
-
-
-
-\### Database
-
-
-
-\- SQL Server
-
-
-
-\---
-
-
-
-\## Project Structure
-
-
-
-```text
 
 MediConnect
 
@@ -176,100 +121,32 @@ MediConnect
 
 └── Program.cs
 
-```
+---
 
+## Installation
 
-
-\---
-
-
-
-\## Installation
-
-
-
-\### Clone Repository
-
-
-
-```bash
+### Clone Repository
 
 git clone https://github.com/your-username/MediConnect.git
-
-```
-
-
-
-\### Navigate to Project
-
-
-
-```bash
+### Navigate to Project
 
 cd MediConnect
-
-```
-
-
-
-\### Restore Packages
-
-
-
-```bash
+### Restore Packages
 
 dotnet restore
-
-```
-
-
-
-\### Apply Migrations
-
-
-
-```bash
+### Apply Migrations
 
 dotnet ef database update
-
-```
-
-
-
-\### Run Application
-
-
-
-```bash
+### Run Application
 
 dotnet run
+---
 
-```
-
-
-
-\---
-
-
-
-\## Database Configuration
-
-
+## Database Configuration
 
 Configure:
 
-
-
-```json
-
 appsettings.json
-
-```
-
-
-
-```json
-
 {
 
 &#x20; "ConnectionStrings": {
@@ -279,38 +156,22 @@ appsettings.json
 &#x20; }
 
 }
+---
 
-```
+## Future Improvements
 
+- Online Consultations
 
+- Electronic Prescriptions
 
-\---
+- Medical Reports Export
 
+- Mobile Application
 
+- Real-Time Notifications
 
-\## Future Improvements
+---
 
-
-
-\- Online Consultations
-
-\- Electronic Prescriptions
-
-\- Medical Reports Export
-
-\- Mobile Application
-
-\- Real-Time Notifications
-
-
-
-\---
-
-
-
-\## License
-
-
+## License
 
 This project was developed for educational purposes.
-
